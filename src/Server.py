@@ -21,7 +21,14 @@ def checkSubscribe(clientId):
             break
     return res
 
-def unsubscribe(clientId, topic = ''):
+def addSubscribe(clientId, topic, qos):
+    subscribes.append({
+        'clientId': clientId,
+        'topic': topic,
+        'qos': qos
+    })
+
+def removeSubscribe(clientId, topic = ''):
     delIndexs = []
     if topic == '':
         for i in range(0,subscribes.__len__()):
@@ -82,7 +89,8 @@ class Connection(threading.Thread):
         while self.alive != self.SOCKET_DISCONNECTED:
             try:
                 data = self.socket.recv(1024)
-                self.keepAliveCounter = 0
+                if data != b'':
+                    self.count = 0
             except:
                 print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " has disconnected.")
                 self.onDisconnect()
@@ -100,7 +108,7 @@ class Connection(threading.Thread):
                     self.clientId = results['clientId']
                     if checkUser(results['userName'], results['password'])==2:
                         if results['cleanSession']==1:
-                            unsubscribe(results['clientId'])
+                            removeSubscribe(results['clientId'])
                         self.keepAlive = results['keepAlive']
                         self.willFlag = results['willFlag']
                         if self.willFlag==1:
@@ -128,12 +136,24 @@ class Connection(threading.Thread):
                 print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " subscribing...")
                 packetIdentifier = results['packetIdentifier']
                 topics = results['topics']
-                #此处无对于QOS等级的验证与修改
                 returnCodes = []
                 for i in range(0,topics.__len__()):
+                    removeSubscribe(self.clientId, topics[i]['topic'])
+                    addSubscribe(self.clientId, topics[i]['topic'], topics[i]['qos'])
                     returnCodes.append(topics[i]['qos'])
                 self.send(Encoders.SUBACK_Encoder(packetIdentifier,returnCodes))
                 print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " subscribed.")
+                print("["+getTime()+"]"+" [SYSTEM/INFO] Current subscirbes: " + str(subscribes) + " .")
+            elif messageType == definition.messageType.UNSUBSCRIBE:
+                print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " unsubscribing...")
+                packetIdentifier = results['packetIdentifier']
+                topics = results['topics']
+                for i in range(0,topics.__len__()):
+                    removeSubscribe(self.clientId, topics[i])
+                self.send(Encoders.UNSUBACK_Encoder(packetIdentifier))
+                print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " unsubscribed.")
+                print("["+getTime()+"]"+" [SYSTEM/INFO] Current subscirbes: " + str(subscribes) + " .")
+
         except Decoders.IllegalMessageException:
             print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " has disconnected: Illegal Message Received.")
             self.onDisconnect()
