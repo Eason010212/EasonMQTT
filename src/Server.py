@@ -1,11 +1,29 @@
 import socket
 import threading, Decoders, definition, Encoders, time
+import sqlite3
+from queue import Queue
 
 connections = []
-subscribes = []
+messageQueue = Queue(0)
+retainedMessages = []
+
+def install():
+    conn = sqlite3.connect('serverDB.db')
+    cursor = conn.cursor()
+    cursor.execute('create table if not exists subscription (clientId varchar(100), topic varchar(100), qos int(2))')
+    cursor.close()
+    conn.commit()
+    conn.close()
 
 def getTime():
     return time.strftime("%H:%M:%S", time.localtime()) 
+
+def addRetain(messageItem):
+    for i in range(0,retainedMessages.__len__()):
+        if retainedMessages[i]['topic'] == messageItem['topic']:
+            retainedMessages.pop(i)
+            break
+    retainedMessages.append(messageItem)
 
 def checkUser(userName, password):
     #0 = INVALID
@@ -13,39 +31,81 @@ def checkUser(userName, password):
     #2 = OK
     return 2
 
-def checkSubscribe(clientId):
-    res = 0
-    for i in range(0,subscribes.__len__()):
-        if subscribes[i]['clientId'] == clientId:
-            res = 1
-            break
+def getAllSubscribe():
+    conn = sqlite3.connect('serverDB.db')
+    cursor = conn.cursor()
+    cursor.execute('select * from subscription')
+    res = cursor.fetchall()
+    cursor.close()
+    conn.commit()
+    conn.close()
+    return res
+
+def getSubscribe(clientId):
+    conn = sqlite3.connect('serverDB.db')
+    cursor = conn.cursor()
+    cursor.execute('select * from subscription where clientId = ? ',(clientId,))
+    res = cursor.fetchall()
+    cursor.close()
+    conn.commit()
+    conn.close()
+    return res
+
+def getSubscribers(topic):
+    conn = sqlite3.connect('serverDB.db')
+    cursor = conn.cursor()
+    cursor.execute('select * from subscription where topic = ?',(topic,))
+    res = cursor.fetchall()
+    cursor.close()
+    conn.commit()
+    conn.close()
     return res
 
 def addSubscribe(clientId, topic, qos):
-    subscribes.append({
-        'clientId': clientId,
-        'topic': topic,
-        'qos': qos
-    })
+    conn = sqlite3.connect('serverDB.db')
+    cursor = conn.cursor()
+    cursor.execute('insert into subscription(clientId, topic, qos) values (\''+clientId+'\',\''+topic+'\','+str(qos)+')')
+    cursor.close()
+    conn.commit()
+    conn.close()
 
 def removeSubscribe(clientId, topic = ''):
-    delIndexs = []
     if topic == '':
-        for i in range(0,subscribes.__len__()):
-            if subscribes[i]['clientId'] == clientId:
-                delIndexs.append(i)
+        conn = sqlite3.connect('serverDB.db')
+        cursor = conn.cursor()
+        cursor.execute('delete from subscription where clientId = ?',(clientId,))
+        cursor.close()
     else:
-        for i in range(0,subscribes.__len__()):
-            if subscribes[i]['clientId'] == clientId and subscribes[i]['topic']== topic:
-                delIndexs.append(i)
-    while delIndexs.__len__()!=0:
-        del subscribes[delIndexs.pop()]
+        conn = sqlite3.connect('serverDB.db')
+        cursor = conn.cursor()
+        cursor.execute('delete from subscription where clientId = ? and topic = ?',(clientId,topic))
+        cursor.close()
+    conn.commit()
+    conn.close()
 
+def publishFromQueue():
+    while True:
+        if messageQueue.qsize() != 0:
+            messageItem = messageQueue.get()
+            subscribers = getSubscribers(messageItem['topic'])
+            for i in range(0,subscribers.__len__()):
+                subscriber = subscribers[i][0]
+                qos = subscribers[i][2]
+                for j in range (0,connections.__len__()):
+                    if connections[j].getClientId()==subscriber:
+                        connections[j].send(Encoders.PUBLISH_Encoder(0, qos, 0,messageItem['topic'],0,messageItem['message']))
+                if messageItem['retain'] == 1:
+                    addRetain(retainedMessages)
+            print("["+getTime()+"]"+" [SYSTEM/INFO] Queue processed a message." + str(messageQueue.qsize()) + " message(s) in queue, "+str(retainedMessages.__len__())+" message(s) retained.")
+            
 class Connection(threading.Thread):
 
     SOCKET_DISCONNECTED = 0
     SOCKET_CONNECTED = 1
     MQTT_CONNECTED = 2
+
+    def getClientId(self):
+        return self.clientId
 
     def __init__(self, socket, address):
         threading.Thread.__init__(self)
@@ -117,7 +177,10 @@ class Connection(threading.Thread):
                             self.willQos = results['willQos']
                             self.willRetain = results['willRetain']
                         print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " has connected.")
-                        self.send(Encoders.CONNACK_Encoder(checkSubscribe(self.clientId), definition.ConnackReturnCode.ACCEPTED))
+                        sessionPresent = getSubscribe(self.clientId).__len__()
+                        if sessionPresent >0:
+                            sessionPresent = 1
+                        self.send(Encoders.CONNACK_Encoder(sessionPresent, definition.ConnackReturnCode.ACCEPTED))
                         keepAliveThread = threading.Thread(target = self.counter)
                         keepAliveThread.start()
                     elif checkUser(results['userName'], results['password'])==0:
@@ -143,7 +206,7 @@ class Connection(threading.Thread):
                     returnCodes.append(topics[i]['qos'])
                 self.send(Encoders.SUBACK_Encoder(packetIdentifier,returnCodes))
                 print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " subscribed.")
-                print("["+getTime()+"]"+" [SYSTEM/INFO] Current subscirbes: " + str(subscribes) + " .")
+                print("["+getTime()+"]"+" [SYSTEM/INFO] Current subscirbes: " + str(getAllSubscribe()) + " .")
             elif messageType == definition.messageType.UNSUBSCRIBE:
                 print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " unsubscribing...")
                 packetIdentifier = results['packetIdentifier']
@@ -152,8 +215,21 @@ class Connection(threading.Thread):
                     removeSubscribe(self.clientId, topics[i])
                 self.send(Encoders.UNSUBACK_Encoder(packetIdentifier))
                 print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " unsubscribed.")
-                print("["+getTime()+"]"+" [SYSTEM/INFO] Current subscirbes: " + str(subscribes) + " .")
-
+                print("["+getTime()+"]"+" [SYSTEM/INFO] Current subscirbes: " + str(getAllSubscribe()) + " .")
+            elif messageType == definition.messageType.PINGREQ:
+                print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " sent a heartbeat.")
+                self.send(Encoders.PINGRESP_Encoder())
+            elif messageType == definition.messageType.PUBLISH:
+                print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " sent a message.")
+                messageQueue.put({
+                    'qos': results['qos'],
+                    'dup': results['dup'],
+                    'retain': results['retain'],
+                    'topic': results['topic'],
+                    'message': results['message'],
+                    'packetIdentifier': results['packetIdentifier']
+                })
+                print("["+getTime()+"]"+" [SYSTEM/INFO] " + str(messageQueue.qsize()) + " message(s) in queue.")
         except Decoders.IllegalMessageException:
             print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " has disconnected: Illegal Message Received.")
             self.onDisconnect()
@@ -174,9 +250,12 @@ def startServer(host, port):
     sock.listen(128)
     newConnectionsThread = threading.Thread(target = newConnections, args = (sock,))
     newConnectionsThread.start()
+    messageQueueThread = threading.Thread(target = publishFromQueue)
+    messageQueueThread.start()
     print("====Eason MQTT-Server v1.0====")
     print("["+getTime()+"]"+" [SYSTEM/INFO] Successfully started!")
     print("["+getTime()+"]"+" [SYSTEM/INFO] running on "+host+":"+str(port))
 
+#install()
 startServer('localhost',8888)
     

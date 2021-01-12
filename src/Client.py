@@ -6,6 +6,8 @@ import Encoders, Decoders, definition, time
 subscribes = []
 tmpSubscribes = []
 tmpUnsubscribes = []
+tmpPublishAtQos1 = []
+tmpPublishAtQos2 = []
 
 SOCKET_DISCONNECTED = 0
 SOCKET_CONNECTED = 1
@@ -78,6 +80,15 @@ def unsubscribe(sock, topics):
     sendMessage(sock, Encoders.UNSUBSCRIBE_Encoder(packetIdentifier,topics))
     print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": Unsubscribing...")
 
+def ping(sock):
+    print("["+getTime()+"]"+" [SYSTEM/INFO] Sending heartbeat...")
+    sendMessage(sock, Encoders.PINGREQ_Encoder())
+    print("["+getTime()+"]"+" [SYSTEM/INFO] Heartbeat sent.")
+
+def publishAtQos0(sock, topic, message, retain):
+    sendMessage(sock, Encoders.PUBLISH_Encoder(0, 0, retain, topic, 0, message))
+    print("["+getTime()+"]"+" [SYSTEM/INFO] Message published at Qos0: " + ".")
+
 def decode(data):
     global alive, sessionPresent,subscribes
     try:
@@ -139,7 +150,8 @@ def decode(data):
                     print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": Unsubscribe success.")
                     break
             print("["+getTime()+"]"+" [SYSTEM/INFO] Current subscribes: "+str(subscribes)+" .")
-
+        elif messageType == definition.messageType.PINGRESP:
+            print("["+getTime()+"]"+" [SYSTEM/INFO] Heartbeat response received.")
     except Decoders.IllegalMessageException:
         print("["+getTime()+"]"+" [SYSTEM/INFO] MQTT Disconnected: Illegal message received.")
         sock.close()
@@ -150,3 +162,7 @@ if __name__=="__main__":
     subscribe(sock, [{'topic':'234','qos':2},{'topic':'666','qos':0}])
     time.sleep(2)
     unsubscribe(sock, ['234'])
+    time.sleep(2)
+    ping(sock)
+    time.sleep(2)
+    publishAtQos0(sock, '788', 'what', 1)
