@@ -3,9 +3,21 @@ import threading, Decoders, definition, Encoders, time
 import sqlite3
 from queue import Queue
 
+ACK_TIMEOUT = 5
+
 connections = []
 messageQueue = Queue(0)
+timeoutTimers = []
 retainedMessages = []
+packetIdentifier = 513
+
+def generatePacketIdentifier():
+    global packetIdentifier
+    if packetIdentifier < 1024:
+        packetIdentifier = packetIdentifier+1
+    else:
+        packetIdentifier = 513
+    return packetIdentifier
 
 def install():
     conn = sqlite3.connect('serverDB.db')
@@ -83,6 +95,14 @@ def removeSubscribe(clientId, topic = ''):
     conn.commit()
     conn.close()
 
+def pubackNotReceived(connection):
+    print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + connection.getAddress() + " has disconnected: Puback timeout.")
+    connection.onDisconnect()
+
+def pubrecNotReceived(connection):
+    print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + connection.getAddress() + " has disconnected: Pubrec timeout.")
+    connection.onDisconnect()
+
 def publishFromQueue():
     while True:
         if messageQueue.qsize() != 0:
@@ -91,13 +111,40 @@ def publishFromQueue():
             for i in range(0,subscribers.__len__()):
                 subscriber = subscribers[i][0]
                 qos = subscribers[i][2]
-                for j in range (0,connections.__len__()):
-                    if connections[j].getClientId()==subscriber:
-                        connections[j].send(Encoders.PUBLISH_Encoder(0, qos, 0,messageItem['topic'],0,messageItem['message']))
-                if messageItem['retain'] == 1:
-                    addRetain(retainedMessages)
+                if qos == 0:
+                    for j in range (0,connections.__len__()):
+                        if connections[j].getClientId()==subscriber:
+                            connections[j].send(Encoders.PUBLISH_Encoder(0, qos, 0, messageItem['topic'], 0, messageItem['message']))
+                elif qos == 1:
+                    packetIdentifier = generatePacketIdentifier()
+                    for j in range (0,connections.__len__()):
+                        if connections[j].getClientId()==subscriber:
+                            connections[j].send(Encoders.PUBLISH_Encoder(0, qos, 0, messageItem['topic'], packetIdentifier, messageItem['message']))
+                            timer = threading.Timer(ACK_TIMEOUT, pubackNotReceived, [connections[j],])
+                            timeoutTimers.append({
+                                'clientId': connections[j].getClientId(),
+                                'packetIdentifier': packetIdentifier,
+                                'waitingFor': 'PUBACK',
+                                'timer': timer
+                            })
+                            timer.start()
+                elif qos == 2:
+                    packetIdentifier = generatePacketIdentifier()
+                    for j in range (0,connections.__len__()):
+                        if connections[j].getClientId()==subscriber:
+                            connections[j].send(Encoders.PUBLISH_Encoder(0, qos, 0, messageItem['topic'], packetIdentifier, messageItem['message']))
+                            timer = threading.Timer(ACK_TIMEOUT, pubrecNotReceived, [connections[j],])
+                            timeoutTimers.append({
+                                'clientId': connections[j].getClientId(),
+                                'packetIdentifier': packetIdentifier,
+                                'waitingFor': 'PUBREC',
+                                'timer': timer
+                            })
+                            timer.start()
+            if messageItem['retain'] == 1:
+                addRetain(messageItem)
             print("["+getTime()+"]"+" [SYSTEM/INFO] Queue processed a message." + str(messageQueue.qsize()) + " message(s) in queue, "+str(retainedMessages.__len__())+" message(s) retained.")
-            
+
 class Connection(threading.Thread):
 
     SOCKET_DISCONNECTED = 0
@@ -106,6 +153,12 @@ class Connection(threading.Thread):
 
     def getClientId(self):
         return self.clientId
+
+    def getAddress(self):
+        return str(self.address)
+
+    def getSock(self):
+        return self.socket
 
     def __init__(self, socket, address):
         threading.Thread.__init__(self)
@@ -130,6 +183,7 @@ class Connection(threading.Thread):
     def onDisconnect(self):
         self.alive = self.SOCKET_DISCONNECTED
         try:
+            #timers移除
             connections.remove(self)
         except:
             pass
@@ -157,6 +211,10 @@ class Connection(threading.Thread):
                 break
             if data != "":
                 self.decode(data)
+
+    def pubcompNotReceived(self):
+        print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + self.getAddress() + " has disconnected: Pubcomp timeout.")
+        self.onDisconnect()
     
     def decode(self, data):
         if data == b'':
@@ -222,14 +280,61 @@ class Connection(threading.Thread):
             elif messageType == definition.messageType.PUBLISH:
                 print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " sent a message.")
                 messageQueue.put({
-                    'qos': results['qos'],
-                    'dup': results['dup'],
                     'retain': results['retain'],
                     'topic': results['topic'],
-                    'message': results['message'],
-                    'packetIdentifier': results['packetIdentifier']
+                    'message': results['message']
                 })
-                print("["+getTime()+"]"+" [SYSTEM/INFO] " + str(messageQueue.qsize()) + " message(s) in queue.")
+                if results['qos'] == 1:
+                    self.send(Encoders.PUBACK_Encoder(results['packetIdentifier']))
+                    print("["+getTime()+"]"+" [SYSTEM/INFO] PUBACK responded to Client " + str(self.address) + " at packet "+str(results['packetIdentifier'])+" .")
+                elif results['qos'] == 2:
+                    self.send(Encoders.PUBREC_Encoder(results['packetIdentifier']))
+                    print("["+getTime()+"]"+" [SYSTEM/INFO] PUBREC responded to Client " + str(self.address) + " at packet "+str(results['packetIdentifier'])+" .")
+            elif messageType == definition.messageType.PUBREL:
+                self.send(Encoders.PUBCOMP_Encoder(results['packetIdentifier']))
+                print("["+getTime()+"]"+" [SYSTEM/INFO] PUBCOMP responded to Client " + str(self.address) + " at packet "+str(results['packetIdentifier'])+" .")
+            elif messageType == definition.messageType.PUBACK:
+                print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " responded a PUBACK.")
+                clientId = self.clientId
+                packetIdentifier = results['packetIdentifier']
+                try:
+                    for i in range(0, timeoutTimers.__len__()):
+                        if timeoutTimers[i]['packetIdentifier'] == packetIdentifier and timeoutTimers[i]['clientId'] == clientId and timeoutTimers[i]['waitingFor'] == 'PUBACK':
+                            timeoutTimers[i]['timer'].cancel()
+                except:
+                    pass
+            elif messageType == definition.messageType.PUBREC:
+                print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " responded a PUBREC.")
+                clientId = self.clientId
+                packetIdentifier = results['packetIdentifier']
+                self.send(Encoders.PUBREL_Encoder(packetIdentifier))
+                print("["+getTime()+"]"+" [SYSTEM/INFO] PUBREL responded to Client " + str(self.address) + " at packet "+str(packetIdentifier)+" .")
+                try:
+                    for i in range(0, timeoutTimers.__len__()):
+                        if timeoutTimers[i]['packetIdentifier'] == packetIdentifier and timeoutTimers[i]['clientId'] == clientId and timeoutTimers[i]['waitingFor'] == 'PUBREC':
+                            timeoutTimers[i]['timer'].cancel()
+                            break
+                    timer = threading.Timer(ACK_TIMEOUT, self.pubcompNotReceived)
+                    timeoutTimers.append({
+                            'clientId': self.getClientId(),
+                            'packetIdentifier': packetIdentifier,
+                            'waitingFor': 'PUBCOMP',
+                            'timer': timer
+                    })
+                    timer.start()
+                except:
+                    pass
+            elif messageType == definition.messageType.PUBCOMP:
+                print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " responded a PUBCOMP.")
+                clientId = self.clientId
+                packetIdentifier = results['packetIdentifier']
+                try:
+                    for i in range(0, timeoutTimers.__len__()):
+                        if timeoutTimers[i]['packetIdentifier'] == packetIdentifier and timeoutTimers[i]['clientId'] == clientId and timeoutTimers[i]['waitingFor'] == 'PUBCOMP':
+                            timeoutTimers[i]['timer'].cancel()
+                            break
+                except:
+                    pass
         except Decoders.IllegalMessageException:
             print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " has disconnected: Illegal Message Received.")
             self.onDisconnect()

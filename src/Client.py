@@ -19,7 +19,7 @@ packetIdentifier = 0
 
 def generatePacketIdentifier():
     global packetIdentifier
-    if packetIdentifier < 1023:
+    if packetIdentifier < 511:
         packetIdentifier = packetIdentifier+1
     else:
         packetIdentifier = 1
@@ -87,7 +87,7 @@ def ping(sock):
 
 def publishAtQos0(sock, topic, message, retain):
     sendMessage(sock, Encoders.PUBLISH_Encoder(0, 0, retain, topic, 0, message))
-    print("["+getTime()+"]"+" [SYSTEM/INFO] Message published at Qos0: " + ".")
+    print("["+getTime()+"]"+" [SYSTEM/INFO] Message published at Qos0" + ".")
 
 def decode(data):
     global alive, sessionPresent,subscribes
