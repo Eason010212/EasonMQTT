@@ -1,14 +1,30 @@
+#!/usr/bin/env python
+# -*-coding:utf-8 -*-
+'''
+@file    :   Encoders.py
+@time    :   2021/01/13 23:33:21
+@author  :   宋义深 
+@version :   1.0
+@contact :   1371033826@qq.com 
+@license :   GPL-3.0 License
+@link    :   https://github.com/Eason010212/EasonMQTT
+'''
+
 import definition
 
-class MessageLengthException(Exception):
-    pass
-
 def utf8_Encoder(str):
+    """
+        Encodes a string into standard UTF-8 format bytes with a length header.
+        Args:
+            str (string): The string to be encoded
+        Returns:
+            bytes: Encoded standard UTF-8 format bytes with a length header
+    """
     b = str.encode('utf-8')
     len = b.__len__()
     l = b''
     if len>65535:
-        raise MessageLengthException()
+        return b''
     else:
         l = int.to_bytes(len,2,'big')
     return l+b

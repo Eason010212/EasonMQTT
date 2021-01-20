@@ -1,3 +1,15 @@
+#!/usr/bin/env python
+# -*-coding:utf-8 -*-
+'''
+@file    :   definition.py
+@time    :   2021/01/14 00:05:10
+@author  :   宋义深 
+@version :   1.0
+@contact :   1371033826@qq.com 
+@license :   GPL-3.0 License
+@link    :   https://github.com/Eason010212/EasonMQTT
+'''
+
 PROTOCOL_NAME = "MQTT"
 PROTOCOL_LEVEL = 4
 

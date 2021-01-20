@@ -1,3 +1,15 @@
+#!/usr/bin/env python
+# -*-coding:utf-8 -*-
+'''
+@file    :   Decoders.py
+@time    :   2021/01/14 00:05:03
+@author  :   宋义深 
+@version :   1.0
+@contact :   1371033826@qq.com 
+@license :   GPL-3.0 License
+@link    :   https://github.com/Eason010212/EasonMQTT
+'''
+
 import definition
 import Encoders
 class IllegalMessageException(Exception):
@@ -8,7 +20,7 @@ def utf8_decoder(bytes):
     str = bytes[2:2+length].decode('utf-8')
     return str, bytes[2+length:]
 
-def remainingBytes_Decoder(bytes):
+def remainingBytes_Decoder(bytes, preMode=False):
     remainedLength = 0
     multiplier = 1
     bytePos = -1
@@ -18,14 +30,14 @@ def remainingBytes_Decoder(bytes):
         multiplier *= 128
         if multiplier > (128*128*128) :
             raise IllegalMessageException()
-    if remainedLength!=bytes[bytePos+1:].__len__():
+    if remainedLength!=bytes[bytePos+1:].__len__() and not preMode:
         raise IllegalMessageException()
     else:
-        return bytes[bytePos+1:]
+        return bytes[bytePos+1:],remainedLength
 
 def CONNECT_Decoder(bytes):
     if int.from_bytes(bytes[0:1],byteorder='big')==16:
-        remBytes = remainingBytes_Decoder(bytes[1:])
+        remBytes = remainingBytes_Decoder(bytes[1:])[0]
         protocolName, remBytes = utf8_decoder(remBytes)
         if protocolName == 'MQTT':
             protocolLevel = int.from_bytes(remBytes[0:1],byteorder='big')
@@ -79,7 +91,7 @@ def CONNECT_Decoder(bytes):
 
 def CONNACK_Decoder(bytes):
     if int.from_bytes(bytes[0:1],byteorder='big')==32:
-        remBytes = remainingBytes_Decoder(bytes[1:])
+        remBytes = remainingBytes_Decoder(bytes[1:])[0]
         sessionPresent = int.from_bytes(remBytes[0:1],'big')
         if sessionPresent<=1:
             returnCode = int.from_bytes(remBytes[1:2],'big')
@@ -98,7 +110,7 @@ def PUBLISH_Decoder(bytes):
     dup = (attrs&8)>>3
     qos = (attrs&6)>>1
     retain = attrs&1
-    remBytes = remainingBytes_Decoder(remBytes)
+    remBytes = remainingBytes_Decoder(remBytes)[0]
     topic, remBytes = utf8_decoder(remBytes)
     packetIdentifier = int.from_bytes(remBytes[0:2],'big')
     message = utf8_decoder(remBytes[2:])[0]
@@ -113,7 +125,7 @@ def PUBLISH_Decoder(bytes):
 
 def PUBACK_Decoder(bytes):
     if int.from_bytes(bytes[0:1],byteorder='big')==64:
-        remBytes = remainingBytes_Decoder(bytes[1:])
+        remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes,'big')
     else:
         raise IllegalMessageException()
@@ -123,7 +135,7 @@ def PUBACK_Decoder(bytes):
 
 def PUBREC_Decoder(bytes):
     if int.from_bytes(bytes[0:1],byteorder='big')==80:
-        remBytes = remainingBytes_Decoder(bytes[1:])
+        remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes,'big')
     else:
         raise IllegalMessageException()
@@ -133,7 +145,7 @@ def PUBREC_Decoder(bytes):
 
 def PUBREL_Decoder(bytes):
     if int.from_bytes(bytes[0:1],byteorder='big')==98:
-        remBytes = remainingBytes_Decoder(bytes[1:])
+        remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes,'big')
     else:
         raise IllegalMessageException()
@@ -143,7 +155,7 @@ def PUBREL_Decoder(bytes):
 
 def PUBCOMP_Decoder(bytes):
     if int.from_bytes(bytes[0:1],byteorder='big')==112:
-        remBytes = remainingBytes_Decoder(bytes[1:])
+        remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes,'big')
     else:
         raise IllegalMessageException()
@@ -153,7 +165,7 @@ def PUBCOMP_Decoder(bytes):
 
 def SUBSCRIBE_Decoder(bytes):
     if int.from_bytes(bytes[0:1],byteorder='big')==130:
-        remBytes = remainingBytes_Decoder(bytes[1:])
+        remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes[0:2],'big')
         remBytes = remBytes[2:]
         topics = []
@@ -175,7 +187,7 @@ def SUBSCRIBE_Decoder(bytes):
 
 def SUBACK_Decoder(bytes):
     if int.from_bytes(bytes[0:1],byteorder='big')==144:
-        remBytes = remainingBytes_Decoder(bytes[1:])
+        remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes[0:2],'big')
         remBytes = remBytes[2:]
         returnCodes = []
@@ -191,7 +203,7 @@ def SUBACK_Decoder(bytes):
 
 def UNSUBSCRIBE_Decoder(bytes):
     if int.from_bytes(bytes[0:1],byteorder='big')==162:
-        remBytes = remainingBytes_Decoder(bytes[1:])
+        remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes[0:2],'big')
         remBytes = remBytes[2:]
         topics = []
@@ -207,7 +219,7 @@ def UNSUBSCRIBE_Decoder(bytes):
 
 def UNSUBACK_Decoder(bytes):
     if int.from_bytes(bytes[0:1],byteorder='big')==176:
-        remBytes = remainingBytes_Decoder(bytes[1:])
+        remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes[0:2],'big')
     else:
         raise IllegalMessageException()
@@ -217,21 +229,21 @@ def UNSUBACK_Decoder(bytes):
 
 def PINGREQ_Decoder(bytes):
     if int.from_bytes(bytes[0:1],byteorder='big')==192:
-        remBytes = remainingBytes_Decoder(bytes[1:])
+        remBytes = remainingBytes_Decoder(bytes[1:])[0]
     else:
         raise IllegalMessageException()
     return {}
 
 def PINGRESP_Decoder(bytes):
     if int.from_bytes(bytes[0:1],byteorder='big')==208:
-        remBytes = remainingBytes_Decoder(bytes[1:])
+        remBytes = remainingBytes_Decoder(bytes[1:])[0]
     else:
         raise IllegalMessageException()
     return {}
 
 def DISCONNECT_Decoder(bytes):
     if int.from_bytes(bytes[0:1],byteorder='big')==224:
-        remBytes = remainingBytes_Decoder(bytes[1:])
+        remBytes = remainingBytes_Decoder(bytes[1:])[0]
     else:
         raise IllegalMessageException()
     return {}

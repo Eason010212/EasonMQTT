@@ -1,3 +1,14 @@
+#!/usr/bin/env python
+# -*-coding:utf-8 -*-
+'''
+@File    :   Client.py
+@Time    :   2021/01/13 23:29:40
+@Author  :   宋义深 
+@Version :   1.0
+@Contact :   1371033826@qq.com
+@License :   GPL-3.0 License
+'''
+
 import socket
 import threading
 import sys
@@ -8,6 +19,8 @@ tmpSubscribes = []
 tmpUnsubscribes = []
 tmpPublishAtQos1 = []
 tmpPublishAtQos2 = []
+tmpReceiveAtQos2 = []
+messageReceived = []
 
 SOCKET_DISCONNECTED = 0
 SOCKET_CONNECTED = 1
@@ -16,6 +29,7 @@ MQTT_CONNECTED = 2
 alive = SOCKET_DISCONNECTED
 sessionPresent = 0
 packetIdentifier = 0
+socketLock = threading.Lock()
 
 def generatePacketIdentifier():
     global packetIdentifier
@@ -33,8 +47,10 @@ def receive(socket):
     while alive!=SOCKET_DISCONNECTED:
         try:
             data = socket.recv(1024)
-            decode(data)
-        except:
+            if data!=b'':
+                decode(data,socket)
+        except Exception as e:
+            print(e)
             print("["+getTime()+"]"+" [SYSTEM/INFO] Socket Disconnected: Connection closed by server.")
             alive = SOCKET_DISCONNECTED
             break
@@ -44,6 +60,7 @@ def startClient(serverHost, serverPort, userNameFlag, passwordFlag, willRetain, 
     global alive
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.setblocking(True)
         print("["+getTime()+"]"+" [SYSTEM/INFO] Socket Connecting...")
         sock.connect((serverHost, serverPort))
     except:
@@ -60,7 +77,9 @@ def startClient(serverHost, serverPort, userNameFlag, passwordFlag, willRetain, 
     return sock
 
 def sendMessage(sock, message):
+    socketLock.acquire()
     sock.sendall(message)
+    socketLock.release()
 
 def removeSubscribe(topic):
     for k in range(0,subscribes.__len__()):
@@ -80,6 +99,10 @@ def unsubscribe(sock, topics):
     sendMessage(sock, Encoders.UNSUBSCRIBE_Encoder(packetIdentifier,topics))
     print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": Unsubscribing...")
 
+def disconnect(sock):
+    print("["+getTime()+"]"+" [SYSTEM/INFO] Sending DISCONNECT message...")
+    sendMessage(sock, Encoders.DISCONNECT_Encoder())
+
 def ping(sock):
     print("["+getTime()+"]"+" [SYSTEM/INFO] Sending heartbeat...")
     sendMessage(sock, Encoders.PINGREQ_Encoder())
@@ -89,7 +112,25 @@ def publishAtQos0(sock, topic, message, retain):
     sendMessage(sock, Encoders.PUBLISH_Encoder(0, 0, retain, topic, 0, message))
     print("["+getTime()+"]"+" [SYSTEM/INFO] Message published at Qos0" + ".")
 
-def decode(data):
+def publishAtQos1(sock, topic, message, retain):
+    packetIdentifier = generatePacketIdentifier()
+    sendMessage(sock, Encoders.PUBLISH_Encoder(0,1,retain,topic,packetIdentifier,message))
+    tmpPublishAtQos1.append({
+        "packetIdentifier":packetIdentifier,
+        "waitingFor":'PUBACK'
+    })
+    return packetIdentifier
+
+def publishAtQos2(sock, topic, message, retain):
+    packetIdentifier = generatePacketIdentifier()
+    sendMessage(sock, Encoders.PUBLISH_Encoder(0,2,retain,topic,packetIdentifier,message))
+    tmpPublishAtQos2.append({
+        "packetIdentifier":packetIdentifier,
+        "waitingFor":'PUBREC'
+    })
+    return packetIdentifier
+
+def decode(data,sock):
     global alive, sessionPresent,subscribes
     try:
         messageType, results = Decoders.message_Decoder(data)
@@ -150,19 +191,77 @@ def decode(data):
                     print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": Unsubscribe success.")
                     break
             print("["+getTime()+"]"+" [SYSTEM/INFO] Current subscribes: "+str(subscribes)+" .")
+        elif messageType == definition.messageType.PUBACK:
+            packetIdentifier = results['packetIdentifier']
+            print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBACK received.")
+            for i in range (0,tmpPublishAtQos1.__len__()):
+                if tmpPublishAtQos1[i]['packetIdentifier'] == packetIdentifier and tmpPublishAtQos1[i]['waitingFor'] == 'PUBACK':
+                    tmpPublishAtQos1.pop(i)
+                    break
+        elif messageType == definition.messageType.PUBREC:
+            packetIdentifier = results['packetIdentifier']
+            print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBREC received.")
+            sendMessage(sock,Encoders.PUBREL_Encoder(packetIdentifier))
+            print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBREL sent.")
+            for i in range (0,tmpPublishAtQos2.__len__()):
+                if tmpPublishAtQos2[i]['packetIdentifier'] == packetIdentifier and tmpPublishAtQos2[i]['waitingFor'] == 'PUBREC':
+                    tmpPublishAtQos2[i]['waitingFor'] = 'PUBCOMP'
+                    break
+        elif messageType == definition.messageType.PUBCOMP:
+            packetIdentifier = results['packetIdentifier']
+            print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBCOMP received.")
+            for i in range (0,tmpPublishAtQos2.__len__()):
+                if tmpPublishAtQos2[i]['packetIdentifier'] == packetIdentifier and tmpPublishAtQos2[i]['waitingFor'] == 'PUBCOMP':
+                    tmpPublishAtQos2.pop(i)
+                    break
+        elif messageType == definition.messageType.PUBLISH:
+            qos = results['qos']
+            topic = results['topic']
+            message = results['message']
+            packetIdentifier = results['packetIdentifier']
+            if qos == 0:
+                print("["+getTime()+"]"+" [SYSTEM/INFO] A message received: topic - "+topic+" , message - "+message+" .")
+                messageReceived.append({
+                    'topic': topic,
+                    'message': message
+                })
+            elif qos == 1:
+                print("["+getTime()+"]"+" [SYSTEM/INFO] A message received: topic - "+topic+" , message - "+message+" .")
+                messageReceived.append({
+                    'topic': topic,
+                    'message': message
+                })
+                sendMessage(sock, Encoders.PUBACK_Encoder(packetIdentifier))
+                print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBACK sent.")
+            elif qos == 2:
+                print("["+getTime()+"]"+" [SYSTEM/INFO] A message received but not confirmed: topic - "+topic+" , message - "+message+" .")
+                tmpReceiveAtQos2.append({
+                    'packetIdentifier': packetIdentifier,
+                    'topic': topic,
+                    'message': message
+                })
+                sendMessage(sock, Encoders.PUBREC_Encoder(packetIdentifier))
+                print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBREC sent.")
+        elif messageType == definition.messageType.PUBREL:
+            packetIdentifier = results['packetIdentifier']
+            print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBREL received.")
+            for i in range(0,tmpReceiveAtQos2.__len__()):
+                if tmpReceiveAtQos2[i]['packetIdentifier'] == packetIdentifier:
+                    res = tmpReceiveAtQos2.pop(i)
+                    messageReceived.append({
+                        'topic': res['topic'],
+                        'message': res['message']
+                    })
+                    print("["+getTime()+"]"+" [SYSTEM/INFO] A message received and confirmed: topic - "+res['topic']+" , message - "+res['message']+" .")
+                    sendMessage(sock, Encoders.PUBCOMP_Encoder(packetIdentifier))
+                    print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBCOMP sent.")
+                    break
         elif messageType == definition.messageType.PINGRESP:
             print("["+getTime()+"]"+" [SYSTEM/INFO] Heartbeat response received.")
-    except Decoders.IllegalMessageException:
+    except Decoders.IllegalMessageException as e:
+        print(data)
         print("["+getTime()+"]"+" [SYSTEM/INFO] MQTT Disconnected: Illegal message received.")
         sock.close()
 
 if __name__=="__main__":
-    sock = startClient('localhost',8888,1,0,1,2,1,1,10,'eason0212','is','ijsfs','eason')
-    time.sleep(2)
-    subscribe(sock, [{'topic':'234','qos':2},{'topic':'666','qos':0}])
-    time.sleep(2)
-    unsubscribe(sock, ['234'])
-    time.sleep(2)
-    ping(sock)
-    time.sleep(2)
-    publishAtQos0(sock, '788', 'what', 1)
+    sock = startClient('localhost',8888,1,0,1,2,1,0,200,'eason0221','is','ijsfs','eason')

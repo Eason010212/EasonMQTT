@@ -1,6 +1,18 @@
+#!/usr/bin/env python
+# -*-coding:utf-8 -*-
+'''
+@file    :   Server.py
+@time    :   2021/01/14 16:35:32
+@author  :   宋义深 
+@version :   1.0
+@contact :   1371033826@qq.com 
+@license :   GPL-3.0 License
+@link    :   https://github.com/Eason010212/EasonMQTT
+'''
+
 import socket
 import threading, Decoders, definition, Encoders, time
-import sqlite3
+import sqlite3,traceback
 from queue import Queue
 
 ACK_TIMEOUT = 5
@@ -10,6 +22,19 @@ messageQueue = Queue(0)
 timeoutTimers = []
 retainedMessages = []
 packetIdentifier = 513
+
+def checkFatherSon(fatherTopic, sonTopic):
+    if (fatherTopic.__len__()-2)<sonTopic.__len__():
+        try:
+            sonTopic.index(fatherTopic[0:fatherTopic.__len__()-2])
+            if sonTopic[fatherTopic.__len__()-2]=='/':
+                return True
+            else:
+                return False
+        except:
+            return False
+    else:
+        return False
 
 def generatePacketIdentifier():
     global packetIdentifier
@@ -65,13 +90,22 @@ def getSubscribe(clientId):
 
 def getSubscribers(topic):
     conn = sqlite3.connect('serverDB.db')
-    cursor = conn.cursor()
-    cursor.execute('select * from subscription where topic = ?',(topic,))
-    res = cursor.fetchall()
-    cursor.close()
+    topicStages = topic.split('/')
+    topics = [topic]
+    allRes = []
+    for i in range(0,topicStages.__len__()-1):
+        ntopic = '/'.join(topicStages[0:topicStages.__len__()-1-i])
+        ntopic = ntopic+'/#'
+        topics.append(ntopic)
+    for qtopic in topics:
+        cursor = conn.cursor()
+        cursor.execute('select * from subscription where topic = ?',(qtopic,))
+        res = cursor.fetchall()
+        allRes.extend(res)
+        cursor.close()
     conn.commit()
     conn.close()
-    return res
+    return allRes
 
 def addSubscribe(clientId, topic, qos):
     conn = sqlite3.connect('serverDB.db')
@@ -151,6 +185,8 @@ class Connection(threading.Thread):
     SOCKET_CONNECTED = 1
     MQTT_CONNECTED = 2
 
+    socketLock = threading.Lock()
+
     def getClientId(self):
         return self.clientId
 
@@ -183,11 +219,19 @@ class Connection(threading.Thread):
     def onDisconnect(self):
         self.alive = self.SOCKET_DISCONNECTED
         try:
-            #timers移除
+            delIndexs = []
+            for i in range(0, timeoutTimers.__len__()):
+                if timeoutTimers[i]['clientId'] == self.clientId:
+                    timeoutTimers[i]['timer'].cancel()
+                    delIndexs.append(i)
+            while delIndexs.__len__()!=0:
+                timeoutTimers.pop(delIndexs.pop())
             connections.remove(self)
         except:
             pass
+        self.socketLock.acquire()
         self.socket.close()
+        self.socketLock.release()
         self.publishWill()
 
     def counter(self):
@@ -202,15 +246,25 @@ class Connection(threading.Thread):
     def run(self):
         while self.alive != self.SOCKET_DISCONNECTED:
             try:
-                data = self.socket.recv(1024)
-                if data != b'':
+                oneMessage = b''
+                data = self.socket.recv(2)
+                oneMessage += data
+                remainedLengthBytes = b''
+                remainedLengthBytes += int.to_bytes(data[1],1,'big')
+                while data !=b'' and (data[data.__len__()-1] & 128 )!=0:
                     self.count = 0
-            except:
+                    data = self.socket.recv(1)
+                    oneMessage += data
+                    remainedLengthBytes += data
+                data = self.socket.recv(Decoders.remainingBytes_Decoder(remainedLengthBytes,True)[1])
+                oneMessage += data
+            except Exception as e:
+                print(traceback.format_exc())
                 print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " has disconnected.")
                 self.onDisconnect()
                 break
-            if data != "":
-                self.decode(data)
+            if oneMessage != b'':
+                self.decode(oneMessage)
 
     def pubcompNotReceived(self):
         print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + self.getAddress() + " has disconnected: Pubcomp timeout.")
@@ -239,6 +293,33 @@ class Connection(threading.Thread):
                         if sessionPresent >0:
                             sessionPresent = 1
                         self.send(Encoders.CONNACK_Encoder(sessionPresent, definition.ConnackReturnCode.ACCEPTED))
+                        scs = getSubscribe(self.clientId)
+                        for sc in scs:
+                            for retainedMessage in retainedMessages:
+                                if checkFatherSon(retainedMessage['topic'],sc[1]) or retainedMessage['topic']==sc[1]:
+                                    packetIdentifier = generatePacketIdentifier()
+                                    self.send(Encoders.PUBLISH_Encoder(0,sc[2],0,retainedMessage['topic'],packetIdentifier,retainedMessage['message']))
+                                    if sc[2]==2:
+                                        timer = threading.Timer(ACK_TIMEOUT, pubrecNotReceived, [self,])
+                                        timeoutTimers.append({
+                                            'clientId': self.getClientId(),
+                                            'packetIdentifier': packetIdentifier,
+                                            'waitingFor': 'PUBREC',
+                                            'timer': timer
+                                        })
+                                        timer.start()
+                                    elif sc[2]==1:
+                                        timer = threading.Timer(ACK_TIMEOUT, pubackNotReceived, [self,])
+                                        timeoutTimers.append({
+                                            'clientId': self.getClientId(),
+                                            'packetIdentifier': packetIdentifier,
+                                            'waitingFor': 'PUBACK',
+                                            'timer': timer
+                                        })
+                                        timer.start()
+                                    print("["+getTime()+"]"+" [SYSTEM/INFO] A retained message sent to Client " + str(self.address) + " at packet "+str(packetIdentifier)+" .")
+                                    retainedMessages.remove(retainedMessage)
+                                    break
                         keepAliveThread = threading.Thread(target = self.counter)
                         keepAliveThread.start()
                     elif checkUser(results['userName'], results['password'])==0:
@@ -335,12 +416,21 @@ class Connection(threading.Thread):
                             break
                 except:
                     pass
+            elif messageType == definition.messageType.DISCONNECT:
+                self.onDisconnect()
+                print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " has disconnected.")
         except Decoders.IllegalMessageException:
+            print(data)
             print("["+getTime()+"]"+" [SYSTEM/INFO] Client " + str(self.address) + " has disconnected: Illegal Message Received.")
             self.onDisconnect()
 
     def send(self, data):
-        self.socket.sendall(data)
+        self.socketLock.acquire()
+        try:
+            self.socket.sendall(data)
+        except:
+            pass
+        self.socketLock.release()
 
 def newConnections(socket):
     while True:
@@ -363,4 +453,3 @@ def startServer(host, port):
 
 #install()
 startServer('localhost',8888)
-    
