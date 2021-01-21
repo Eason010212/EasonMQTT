@@ -1,0 +1,768 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Server module &mdash; EasonMQTT 1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> EasonMQTT
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Server module</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EasonMQTT</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Server module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/Server.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-Server">
+<span id="server-module"></span><h1>Server module<a class="headerlink" href="#module-Server" title="Permalink to this headline">¶</a></h1>
+<p>&#64;file    :   Server.py
+&#64;time    :   2021/01/21 16:55:33
+&#64;author  :   宋义深 
+&#64;version :   1.0
+&#64;contact :   <a class="reference external" href="mailto:1371033826&#37;&#52;&#48;qq&#46;com">1371033826<span>&#64;</span>qq<span>&#46;</span>com</a> 
+&#64;license :   GPL-3.0 License
+&#64;link    :   <a class="reference external" href="https://github.com/Eason010212/EasonMQTT">https://github.com/Eason010212/EasonMQTT</a></p>
+<dl class="py class">
+<dt id="Server.Connection">
+<em class="property">class </em><code class="sig-prename descclassname">Server.</code><code class="sig-name descname">Connection</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">socket</span></em>, <em class="sig-param"><span class="n">address</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Server.Connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Thread</span></code></p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>与客户端进行信息交互与处理的类。继承自Thread。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>socket(Socket)</dt><dd><p>与客户端建立连接的套接字对象。</p>
+</dd>
+<dt>address(tuple)</dt><dd><p>客户端的套接字地址。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="Server.Connection.MQTT_CONNECTED">
+<code class="sig-name descname">MQTT_CONNECTED</code><em class="property"> = 2</em><a class="headerlink" href="#Server.Connection.MQTT_CONNECTED" title="Permalink to this definition">¶</a></dt>
+<dd><p>状态标识符：MQTT已连接。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="Server.Connection.SOCKET_CONNECTED">
+<code class="sig-name descname">SOCKET_CONNECTED</code><em class="property"> = 1</em><a class="headerlink" href="#Server.Connection.SOCKET_CONNECTED" title="Permalink to this definition">¶</a></dt>
+<dd><p>状态标识符：socket已连接。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="Server.Connection.SOCKET_DISCONNECTED">
+<code class="sig-name descname">SOCKET_DISCONNECTED</code><em class="property"> = 0</em><a class="headerlink" href="#Server.Connection.SOCKET_DISCONNECTED" title="Permalink to this definition">¶</a></dt>
+<dd><p>状态标识符：未连接。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Server.Connection.counter">
+<code class="sig-name descname">counter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Server.Connection.counter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>保活（keepAlive）计时器，用以作为保活线程的主方法。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Server.Connection.decode">
+<code class="sig-name descname">decode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Server.Connection.decode" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>对于给定的报文字节串进行解码，并实现对应的逻辑响应。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>data(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>消息解码错误。</p>
+</dd>
+<dt>IOException</dt><dd><p>socket连接错误。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Server.Connection.getAddress">
+<code class="sig-name descname">getAddress</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Server.Connection.getAddress" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>获取当前连接的socket套接字字符串。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>string</dt><dd><p>当前连接的socket套接字字符串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Server.Connection.getClientId">
+<code class="sig-name descname">getClientId</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Server.Connection.getClientId" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>获取当前连接的clientID。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>string</dt><dd><p>当前连接的clientID。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Server.Connection.getSock">
+<code class="sig-name descname">getSock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Server.Connection.getSock" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>获取当前连接的套接字对象。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>string</dt><dd><p>当前连接的套接字对象。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Server.Connection.onDisconnect">
+<code class="sig-name descname">onDisconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Server.Connection.onDisconnect" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>客户端断开连接、或断开客户端连接时进行的系列操作，包含停止timeout计时器、发布遗嘱、关闭套接字三部分，发布遗嘱和关闭套接字申请了线程锁，因此整个方法是线程阻塞的。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接异常。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Server.Connection.pubcompNotReceived">
+<code class="sig-name descname">pubcompNotReceived</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Server.Connection.pubcompNotReceived" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>未收到PUBCOMP响应的callback方法，用以与收到PUBREL报文后启动的timeout线程绑定。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Server.Connection.publishWill">
+<code class="sig-name descname">publishWill</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Server.Connection.publishWill" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>代替客户端发布遗嘱消息。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Server.Connection.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Server.Connection.run" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>接收消息的线程主方法，基于剩余长度实现帧定界，并传递给解码方法。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Server.Connection.send">
+<code class="sig-name descname">send</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Server.Connection.send" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>向客户端发送字节串。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>data(bytes[])</dt><dd><p>待发送的字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接错误。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="Server.Connection.socketLock">
+<code class="sig-name descname">socketLock</code><em class="property"> = &lt;unlocked _thread.lock object&gt;</em><a class="headerlink" href="#Server.Connection.socketLock" title="Permalink to this definition">¶</a></dt>
+<dd><p>socket线程锁。为确保消息发送顺序的正确性，所有有关当前connection中“发送消息”的操作，都必须先申请此线程锁，并在操作完成后进行释放。</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.addRetain">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">addRetain</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">messageItem</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Server.addRetain" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>向运行存储中添加保留（RETAIN）消息。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>messageItem(Dict)</dt><dd><p>保留消息字典。必须包含’topic’和’message’字段。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.addSubscribe">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">addSubscribe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clientId</span></em>, <em class="sig-param"><span class="n">topic</span></em>, <em class="sig-param"><span class="n">qos</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Server.addSubscribe" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>向数据库内写入新的订阅信息。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>clientId(string)</dt><dd><p>订阅者的clientId。</p>
+</dd>
+<dt>topic(string)</dt><dd><p>订阅主题。</p>
+</dd>
+<dt>qos(int)</dt><dd><p>订阅服务质量等级。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Exception</dt><dd><p>参见sqlite3的异常抛出规则。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.checkFatherSon">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">checkFatherSon</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fatherTopic</span></em>, <em class="sig-param"><span class="n">sonTopic</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Server.checkFatherSon" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>检验两个主题之间是否存在父-子层级关系。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>fatherTopic(string)</dt><dd><p>待检验的父主题。</p>
+</dd>
+<dt>sonTopic(string)</dt><dd><p>待检验的子主题。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>boolean</dt><dd><p>True-存在父子关系，False-不存在父子关系。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.checkUser">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">checkUser</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">userName</span></em>, <em class="sig-param"><span class="n">password</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Server.checkUser" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>用户验证方法（可自定义，默认全部放通）。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>userName(string)</dt><dd><p>待验证的用户名。</p>
+</dd>
+<dt>password(string)</dt><dd><p>待验证的密码。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>int</dt><dd><p>0: 用户名或密码格式无效；
+1: 用户名或密码不正确；
+2: 用户验证成功。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.generatePacketIdentifier">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">generatePacketIdentifier</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Server.generatePacketIdentifier" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>生成短期内唯一的报文标识符。为保证唯一性，此方法申请了线程锁，因此是线程阻塞的。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>string</dt><dd><p>报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.getAllSubscribe">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">getAllSubscribe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Server.getAllSubscribe" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>获取当前服务端上全部的订阅信息。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>Array[Tuple(3)]</dt><dd><p>订阅信息数组。数组由订阅元组构成，元组0位为clientId，元组1位为topic，元组2位为QoS。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Exception</dt><dd><p>参见sqlite3的异常抛出规则。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.getSubscribe">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">getSubscribe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clientId</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Server.getSubscribe" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>获取指定clientID的全部订阅信息。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>clientId(string)</dt><dd><p>指定的clientID。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>Array[Tuple(3)]</dt><dd><p>订阅信息数组。数组由订阅元组构成，元组0位为clientId，元组1位为topic，元组2位为QoS。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Exception</dt><dd><p>参见sqlite3的异常抛出规则。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.getSubscribers">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">getSubscribers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">topic</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Server.getSubscribers" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>获取指定主题的全部订阅信息。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>topic(string)</dt><dd><p>指定的主题。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>Array[Tuple(3)]</dt><dd><p>订阅信息数组。数组由订阅元组构成，元组0位为clientId，元组1位为topic，元组2位为QoS。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Exception</dt><dd><p>参见sqlite3的异常抛出规则。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.getTime">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">getTime</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Server.getTime" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>获取用以在控制台进行输出的当前时间字符串。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>string</dt><dd><p>当前时间字符串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.install">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">install</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Server.install" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>初始化服务器所需的数据库。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Exception</dt><dd><p>参见sqlite3的异常抛出规则。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.newConnections">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">newConnections</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">socket</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Server.newConnections" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>监听指向当前服务端的连接，并为新的连接创建Connection对象。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>socket(Socket)</dt><dd><p>当前服务端套接字对象。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接异常。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.pubackNotReceived">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">pubackNotReceived</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">connection</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Server.pubackNotReceived" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>未收到PUBACK响应的callback方法，用以与收到QoS1级别PUBLISH报文后启动的timeout线程绑定。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>connection(Server.Connection):</dt><dd><p>未收到响应的连接单元。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接异常。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.publishFromQueue">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">publishFromQueue</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Server.publishFromQueue" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>从线程安全的messageQueue中按队列顺序发送消息。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接异常。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.pubrecNotReceived">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">pubrecNotReceived</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">connection</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Server.pubrecNotReceived" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>未收到PUBREC响应的callback方法，用以与收到QoS2级别PUBLISH报文后启动的timeout线程绑定。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>connection(Server.Connection)</dt><dd><p>未收到响应的连接单元。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接异常。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.removeSubscribe">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">removeSubscribe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clientId</span></em>, <em class="sig-param"><span class="n">topic</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Server.removeSubscribe" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>移除对应用户、主题的订阅信息；当主题参数为空时，移除对应用户的全部订阅信息。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>clientId(string)</dt><dd><p>移除订阅信息的用户clientID。</p>
+</dd>
+<dt>topic(string, DEFAULT=’’)</dt><dd><p>移除订阅信息的主题。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Exception</dt><dd><p>参见sqlite3的异常抛出规则。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Server.startServer">
+<code class="sig-prename descclassname">Server.</code><code class="sig-name descname">startServer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">host</span></em>, <em class="sig-param"><span class="n">port</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Server.startServer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>启动服务端。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>host(string)</dt><dd><p>服务端地址。这一地址通常需要设置为内网私有IP（即便目的是在公网上运行）。</p>
+</dd>
+<dt>port(int)</dt><dd><p>服务端端口号。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接异常。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, 宋义深.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

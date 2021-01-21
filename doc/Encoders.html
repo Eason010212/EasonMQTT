@@ -1,0 +1,577 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Encoders module &mdash; EasonMQTT 1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> EasonMQTT
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Encoders module</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EasonMQTT</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Encoders module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/Encoders.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-Encoders">
+<span id="encoders-module"></span><h1>Encoders module<a class="headerlink" href="#module-Encoders" title="Permalink to this headline">¶</a></h1>
+<p>&#64;file    :   Encoders.py
+&#64;time    :   2021/01/21 23:27:34
+&#64;author  :   宋义深 
+&#64;version :   1.0
+&#64;contact :   <a class="reference external" href="mailto:1371033826&#37;&#52;&#48;qq&#46;com">1371033826<span>&#64;</span>qq<span>&#46;</span>com</a> 
+&#64;license :   GPL-3.0 License
+&#64;link    :   <a class="reference external" href="https://github.com/Eason010212/EasonMQTT">https://github.com/Eason010212/EasonMQTT</a></p>
+<dl class="py function">
+<dt id="Encoders.CONNACK_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">CONNACK_Encoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sessionPresent</span></em>, <em class="sig-param"><span class="n">returnCode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.CONNACK_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码CONNACK报文字节串。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>sessionPresent(int)</dt><dd><p>当前会话标志。</p>
+</dd>
+<dt>returnCode(int)</dt><dd><p>CONNACK返回码（具体含义见definiton.ConnackReturnCode)。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的CONNACK报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Encoders.CONNECT_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">CONNECT_Encoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">userNameFlag</span></em>, <em class="sig-param"><span class="n">passwordFlag</span></em>, <em class="sig-param"><span class="n">willRetain</span></em>, <em class="sig-param"><span class="n">willQos</span></em>, <em class="sig-param"><span class="n">willFlag</span></em>, <em class="sig-param"><span class="n">cleanSession</span></em>, <em class="sig-param"><span class="n">keepAlive</span></em>, <em class="sig-param"><span class="n">clientId</span></em>, <em class="sig-param"><span class="n">willTopic</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">willMessage</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">userName</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">password</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.CONNECT_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码CONNECT报文字节串。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>userNameFlag(int)</dt><dd><p>用户名标志，1为存在用户名字段，0为不存在。</p>
+</dd>
+<dt>passwordFlag(int)</dt><dd><p>密码标志，1为存在密码字段，0为不存在。</p>
+</dd>
+<dt>willRetain(int)</dt><dd><p>遗嘱保留（willFlag = 0时必须设置为0），1为遗嘱保留，0为遗嘱不保留。</p>
+</dd>
+<dt>willQos(int)</dt><dd><p>遗嘱消息服务质量（willFlag = 0时必须设置为0）。</p>
+</dd>
+<dt>willFlag(int)</dt><dd><p>遗嘱标志。</p>
+</dd>
+<dt>cleanSession(int)</dt><dd><p>清理会话标志，1为清除历史订阅信息，0为不清除。</p>
+</dd>
+<dt>keepAlive(int)</dt><dd><p>保活时长，单位为s。</p>
+</dd>
+<dt>clientId(int)</dt><dd><p>ClientID。</p>
+</dd>
+<dt>willTopic(string)</dt><dd><p>遗嘱消息主题（仅willFlag = 1时可设置）。</p>
+</dd>
+<dt>willMessage(string)</dt><dd><p>遗嘱消息内容（仅willFlag = 1时可设置）。</p>
+</dd>
+<dt>userName(string)</dt><dd><p>用户名（仅userNameFlag = 1时可设置）。</p>
+</dd>
+<dt>password(string)</dt><dd><p>密码（仅password = 1时可设置）。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的CONNECT报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Encoders.DISCONNECT_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">DISCONNECT_Encoder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.DISCONNECT_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码DISCONNECT报文字节串。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的DISCONNECT报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Encoders.PINGREQ_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">PINGREQ_Encoder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.PINGREQ_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码PINGREQ报文字节串。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的PINGREQ报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Encoders.PINGRESP_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">PINGRESP_Encoder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.PINGRESP_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码PINGRESP报文字节串。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的PINGRESP文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Encoders.PUBACK_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">PUBACK_Encoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packetIdentifier</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.PUBACK_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码PUBACK报文字节串。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>packetIdenifier(int)</dt><dd><p>报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的PUBACK报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Encoders.PUBCOMP_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">PUBCOMP_Encoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packetIdentifier</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.PUBCOMP_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码PUBCOMP报文字节串。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>packetIdentifier(int)</dt><dd><p>报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的PUBCOMP报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Encoders.PUBLISH_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">PUBLISH_Encoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dup</span></em>, <em class="sig-param"><span class="n">qos</span></em>, <em class="sig-param"><span class="n">retain</span></em>, <em class="sig-param"><span class="n">topic</span></em>, <em class="sig-param"><span class="n">packetIdentifier</span></em>, <em class="sig-param"><span class="n">message</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.PUBLISH_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码PUBLISH报文字节串。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>dup(int)</dt><dd><p>消息重发标志，1为重发消息，0为非重发消息。</p>
+</dd>
+<dt>qos(int)</dt><dd><p>消息服务质量等级。</p>
+</dd>
+<dt>retain(int)</dt><dd><p>消息保留标志，1为保留消息，0为非保留消息。</p>
+</dd>
+<dt>topic(string)</dt><dd><p>消息主题。</p>
+</dd>
+<dt>packetIdentifier(int)</dt><dd><p>报文标识符。</p>
+</dd>
+<dt>message(string)</dt><dd><p>消息内容。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的PUBLISH报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Encoders.PUBREC_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">PUBREC_Encoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packetIdentifier</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.PUBREC_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码PUBREC报文字节串。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>packetIdentifier(int)</dt><dd><p>报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的PUBREC报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Encoders.PUBREL_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">PUBREL_Encoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packetIdentifier</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.PUBREL_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码PUBREL报文字节串。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>packetIdentifier(int)</dt><dd><p>报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的PUBREL报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Encoders.SUBACK_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">SUBACK_Encoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packetIdentifier</span></em>, <em class="sig-param"><span class="n">returnCodes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.SUBACK_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码SUBACK报文字节串。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>packetIdentifier(int)</dt><dd><p>报文标识符。</p>
+</dd>
+<dt>returnCodes(array[int])</dt><dd><p>订阅结果数组。数组单元为definiton.SubackReturnCode中定义的内容。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的SUBACK报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Encoders.SUBSCRIBE_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">SUBSCRIBE_Encoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packetIdentifier</span></em>, <em class="sig-param"><span class="n">topics</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.SUBSCRIBE_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码SUBSCRIBE报文字节串。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>packetIdentifier(int)</dt><dd><p>报文标识符。</p>
+</dd>
+<dt>topics(array[dict])</dt><dd><p>订阅信息数组。数组单元为字典，字典中必须包含topic字段和qos字段。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的SUBSCRIBE报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Encoders.UNSUBACK_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">UNSUBACK_Encoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packetIdentifier</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.UNSUBACK_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码UNSUBACK报文字节串。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>packetIdentifier(int)</dt><dd><p>报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的UNSUBACK报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Encoders.UNSUBSCRIBE_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">UNSUBSCRIBE_Encoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packetIdentifier</span></em>, <em class="sig-param"><span class="n">topics</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.UNSUBSCRIBE_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码UNSUBSCRIBE报文字节串。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>packetIdentifier(int)</dt><dd><p>报文标识符。</p>
+</dd>
+<dt>topics(array[string])</dt><dd><p>取消订阅信息数组，数组单元为取消订阅的主题字符串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的UNSUBSCRIBE报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Encoders.remainingBytes_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">remainingBytes_Encoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">length</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.remainingBytes_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码MQTT规定的“剩余长度”字节串。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>len(int)</dt><dd><p>剩余长度。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的“剩余长度”字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Encoders.utf8_Encoder">
+<code class="sig-prename descclassname">Encoders.</code><code class="sig-name descname">utf8_Encoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Encoders.utf8_Encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>编码带长度头部的utf-8字节串。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>str(string)</dt><dd><p>待编码的字符串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>编码的带长度头部的utf-8字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, 宋义深.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

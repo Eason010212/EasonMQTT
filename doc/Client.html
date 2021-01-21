@@ -1,0 +1,579 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Client module &mdash; EasonMQTT 1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> EasonMQTT
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Client module</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EasonMQTT</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Client module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/Client.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-Client">
+<span id="client-module"></span><h1>Client module<a class="headerlink" href="#module-Client" title="Permalink to this headline">¶</a></h1>
+<p>&#64;file    :   Client.py
+&#64;time    :   2021/01/21 17:15:51
+&#64;author  :   宋义深 
+&#64;version :   1.0
+&#64;contact :   <a class="reference external" href="mailto:1371033826&#37;&#52;&#48;qq&#46;com">1371033826<span>&#64;</span>qq<span>&#46;</span>com</a> 
+&#64;license :   GPL-3.0 License
+&#64;link    :   <a class="reference external" href="https://github.com/Eason010212/EasonMQTT">https://github.com/Eason010212/EasonMQTT</a></p>
+<dl class="py function">
+<dt id="Client.checkPackageStatus">
+<code class="sig-prename descclassname">Client.</code><code class="sig-name descname">checkPackageStatus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packetIdenifier</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Client.checkPackageStatus" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>检查报文标识符对应的报文是否已按对应的服务质量等级完成交互。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>packetIdentifier(int)</dt><dd><p>待检查报文的报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>boolean</dt><dd><p>True - 已完成交互；False - 尚未完成交互。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Client.decode">
+<code class="sig-prename descclassname">Client.</code><code class="sig-name descname">decode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">sock</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Client.decode" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>解码报文，并做出对应的逻辑响应。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>data(byte[]):</dt><dd><p>待解码的报文字符串。</p>
+</dd>
+<dt>sock(Socket):</dt><dd><p>客户端socket对象。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接异常。</p>
+</dd>
+<dt>Decoders.IllegalMessageException</dt><dd><p>报文解码异常。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Client.disconnect">
+<code class="sig-prename descclassname">Client.</code><code class="sig-name descname">disconnect</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sock</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Client.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>主动断开与服务端的连接。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>sock(Socket):</dt><dd><p>客户端socket对象。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接异常。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Client.generatePacketIdentifier">
+<code class="sig-prename descclassname">Client.</code><code class="sig-name descname">generatePacketIdentifier</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Client.generatePacketIdentifier" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>生成短期内唯一的报文标识符。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>生成的报文标识符。</p>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Client.getTime">
+<code class="sig-prename descclassname">Client.</code><code class="sig-name descname">getTime</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Client.getTime" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>获取用以在控制台进行输出的当前时间字符串。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>string</dt><dd><p>当前时间字符串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Client.ping">
+<code class="sig-prename descclassname">Client.</code><code class="sig-name descname">ping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sock</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Client.ping" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>向服务器发送PING请求。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>sock(Socket):</dt><dd><p>客户端socket对象。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接异常。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Client.publishAtQos0">
+<code class="sig-prename descclassname">Client.</code><code class="sig-name descname">publishAtQos0</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sock</span></em>, <em class="sig-param"><span class="n">topic</span></em>, <em class="sig-param"><span class="n">message</span></em>, <em class="sig-param"><span class="n">retain</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Client.publishAtQos0" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>发送一则服务质量等级为0的消息。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>sock(Socket):</dt><dd><p>客户端socket对象。</p>
+</dd>
+<dt>topic(string):</dt><dd><p>消息主题。</p>
+</dd>
+<dt>message(string):</dt><dd><p>消息内容。</p>
+</dd>
+<dt>retain(int):</dt><dd><p>消息保留标志。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接异常。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Client.publishAtQos1">
+<code class="sig-prename descclassname">Client.</code><code class="sig-name descname">publishAtQos1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sock</span></em>, <em class="sig-param"><span class="n">topic</span></em>, <em class="sig-param"><span class="n">message</span></em>, <em class="sig-param"><span class="n">retain</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Client.publishAtQos1" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>发送一则服务质量等级为1的消息。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>sock(Socket):</dt><dd><p>客户端socket对象。</p>
+</dd>
+<dt>topic(string):</dt><dd><p>消息主题。</p>
+</dd>
+<dt>message(string):</dt><dd><p>消息内容。</p>
+</dd>
+<dt>retain(int):</dt><dd><p>消息保留标志。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>packetIdentifier(int)</dt><dd><p>本次请求使用的报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接异常。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Client.publishAtQos2">
+<code class="sig-prename descclassname">Client.</code><code class="sig-name descname">publishAtQos2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sock</span></em>, <em class="sig-param"><span class="n">topic</span></em>, <em class="sig-param"><span class="n">message</span></em>, <em class="sig-param"><span class="n">retain</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Client.publishAtQos2" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>发送一则服务质量等级为2的消息。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>sock(Socket):</dt><dd><p>客户端socket对象。</p>
+</dd>
+<dt>topic(string):</dt><dd><p>消息主题。</p>
+</dd>
+<dt>message(string):</dt><dd><p>消息内容。</p>
+</dd>
+<dt>retain(int):</dt><dd><p>消息保留标志。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>packetIdentifier(int)</dt><dd><p>本次请求使用的报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接异常。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Client.receive">
+<code class="sig-prename descclassname">Client.</code><code class="sig-name descname">receive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">socket</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Client.receive" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>接收消息的主方法，基于剩余长度实现帧定界，并传递给解码方法。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>socket(Socket):</dt><dd><p>客户端socket对象。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Client.removeSubscribe">
+<code class="sig-prename descclassname">Client.</code><code class="sig-name descname">removeSubscribe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">topic</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Client.removeSubscribe" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>从本地存储中移除特定的订阅主题（非向服务器请求取消订阅）。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>topic(string)</dt><dd><p>移除的主题名。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Client.sendMessage">
+<code class="sig-prename descclassname">Client.</code><code class="sig-name descname">sendMessage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sock</span></em>, <em class="sig-param"><span class="n">message</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Client.sendMessage" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>在给定的socket连接中发送消息。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>sock(Socket):</dt><dd><p>客户端socket对象。</p>
+</dd>
+<dt>message(byte[]):</dt><dd><p>将要发送的字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接错误。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Client.startClient">
+<code class="sig-prename descclassname">Client.</code><code class="sig-name descname">startClient</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">serverHost</span></em>, <em class="sig-param"><span class="n">serverPort</span></em>, <em class="sig-param"><span class="n">userNameFlag</span></em>, <em class="sig-param"><span class="n">passwordFlag</span></em>, <em class="sig-param"><span class="n">willRetain</span></em>, <em class="sig-param"><span class="n">willQos</span></em>, <em class="sig-param"><span class="n">willFlag</span></em>, <em class="sig-param"><span class="n">cleanSession</span></em>, <em class="sig-param"><span class="n">keepAlive</span></em>, <em class="sig-param"><span class="n">clientId</span></em>, <em class="sig-param"><span class="n">willTopic</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">willMessage</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">userName</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">password</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Client.startClient" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>启动客户端。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>serverHost(string)</dt><dd><p>服务器地址。</p>
+</dd>
+<dt>serverPort(int)</dt><dd><p>服务器端口。</p>
+</dd>
+<dt>userNameFlag(int)</dt><dd><p>用户名标志，1为存在用户名字段，0为不存在。</p>
+</dd>
+<dt>passwordFlag(int)</dt><dd><p>密码标志，1为存在密码字段，0为不存在。</p>
+</dd>
+<dt>willRetain(int)</dt><dd><p>遗嘱保留（willFlag = 0时必须设置为0），1为遗嘱保留，0为遗嘱不保留。</p>
+</dd>
+<dt>willQos(int)</dt><dd><p>遗嘱消息服务质量（willFlag = 0时必须设置为0）。</p>
+</dd>
+<dt>willFlag(int)</dt><dd><p>遗嘱标志。</p>
+</dd>
+<dt>cleanSession(int)</dt><dd><p>清理会话标志，1为清除历史订阅信息，0为不清除。</p>
+</dd>
+<dt>keepAlive(int)</dt><dd><p>保活时长，单位为s。</p>
+</dd>
+<dt>clientId(int)</dt><dd><p>ClientID。</p>
+</dd>
+<dt>willTopic(string)</dt><dd><p>遗嘱消息主题（仅willFlag = 1时可设置）。</p>
+</dd>
+<dt>willMessage(string)</dt><dd><p>遗嘱消息内容（仅willFlag = 1时可设置）。</p>
+</dd>
+<dt>userName(string)</dt><dd><p>用户名（仅userNameFlag = 1时可设置）。</p>
+</dd>
+<dt>password(string)</dt><dd><p>密码（仅password = 1时可设置）。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>Socket:</dt><dd><p>客户端socket对象。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接错误。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Client.subscribe">
+<code class="sig-prename descclassname">Client.</code><code class="sig-name descname">subscribe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sock</span></em>, <em class="sig-param"><span class="n">topics</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Client.subscribe" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>订阅一组主题消息。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>sock(Socket):</dt><dd><p>客户端socket对象。</p>
+</dd>
+<dt>topics(array[dict]):</dt><dd><p>将要订阅的主题数组，数组单元为主题字典，必须包含topic和qos两个字段。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>packetIdentifier(int)</dt><dd><p>本次请求使用的报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接异常。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Client.unsubscribe">
+<code class="sig-prename descclassname">Client.</code><code class="sig-name descname">unsubscribe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sock</span></em>, <em class="sig-param"><span class="n">topics</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Client.unsubscribe" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>取消订阅一组主题消息。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>sock(Socket):</dt><dd><p>客户端socket对象。</p>
+</dd>
+<dt>topics(array[string]):</dt><dd><p>将要取消订阅的主题数组，数组单元为主题字符串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>packetIdentifier(int)</dt><dd><p>本次请求使用的报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>IOException</dt><dd><p>socket连接异常。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, 宋义深.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

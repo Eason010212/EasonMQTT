@@ -1,0 +1,7 @@
+Decoders module
+===============
+
+.. automodule:: Decoders
+   :members:
+   :undoc-members:
+   :show-inheritance:

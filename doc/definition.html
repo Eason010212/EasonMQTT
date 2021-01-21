@@ -1,0 +1,360 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>definition module &mdash; EasonMQTT 1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> EasonMQTT
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">definition module</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EasonMQTT</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>definition module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/definition.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-definition">
+<span id="definition-module"></span><h1>definition module<a class="headerlink" href="#module-definition" title="Permalink to this headline">¶</a></h1>
+<p>&#64;file    :   definition.py
+&#64;time    :   2021/01/21 23:50:14
+&#64;author  :   宋义深 
+&#64;version :   1.0
+&#64;contact :   <a class="reference external" href="mailto:1371033826&#37;&#52;&#48;qq&#46;com">1371033826<span>&#64;</span>qq<span>&#46;</span>com</a> 
+&#64;license :   GPL-3.0 License
+&#64;link    :   <a class="reference external" href="https://github.com/Eason010212/EasonMQTT">https://github.com/Eason010212/EasonMQTT</a></p>
+<dl class="py class">
+<dt id="definition.ConnackReturnCode">
+<em class="property">class </em><code class="sig-prename descclassname">definition.</code><code class="sig-name descname">ConnackReturnCode</code><a class="headerlink" href="#definition.ConnackReturnCode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>MQTT协议定义的CONNACK返回码。</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="definition.ConnackReturnCode.ACCEPTED">
+<code class="sig-name descname">ACCEPTED</code><em class="property"> = 0</em><a class="headerlink" href="#definition.ConnackReturnCode.ACCEPTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.ConnackReturnCode.REFUSED_ILLEGAL_CLIENTID">
+<code class="sig-name descname">REFUSED_ILLEGAL_CLIENTID</code><em class="property"> = 2</em><a class="headerlink" href="#definition.ConnackReturnCode.REFUSED_ILLEGAL_CLIENTID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.ConnackReturnCode.REFUSED_INVALID_USER">
+<code class="sig-name descname">REFUSED_INVALID_USER</code><em class="property"> = 4</em><a class="headerlink" href="#definition.ConnackReturnCode.REFUSED_INVALID_USER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.ConnackReturnCode.REFUSED_SERVER_UNAVAILABLE">
+<code class="sig-name descname">REFUSED_SERVER_UNAVAILABLE</code><em class="property"> = 3</em><a class="headerlink" href="#definition.ConnackReturnCode.REFUSED_SERVER_UNAVAILABLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.ConnackReturnCode.REFUSED_UNAUTHORIZED">
+<code class="sig-name descname">REFUSED_UNAUTHORIZED</code><em class="property"> = 5</em><a class="headerlink" href="#definition.ConnackReturnCode.REFUSED_UNAUTHORIZED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.ConnackReturnCode.REFUSED_UNSUPPORTED_PROTOCOL">
+<code class="sig-name descname">REFUSED_UNSUPPORTED_PROTOCOL</code><em class="property"> = 1</em><a class="headerlink" href="#definition.ConnackReturnCode.REFUSED_UNSUPPORTED_PROTOCOL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="definition.SubackReturnCode">
+<em class="property">class </em><code class="sig-prename descclassname">definition.</code><code class="sig-name descname">SubackReturnCode</code><a class="headerlink" href="#definition.SubackReturnCode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>MQTT协议定义的SUBACK返回码。</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="definition.SubackReturnCode.FAILURE">
+<code class="sig-name descname">FAILURE</code><em class="property"> = 128</em><a class="headerlink" href="#definition.SubackReturnCode.FAILURE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.SubackReturnCode.SUCCESS_MAX_QOS_0">
+<code class="sig-name descname">SUCCESS_MAX_QOS_0</code><em class="property"> = 0</em><a class="headerlink" href="#definition.SubackReturnCode.SUCCESS_MAX_QOS_0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.SubackReturnCode.SUCCESS_MAX_QOS_1">
+<code class="sig-name descname">SUCCESS_MAX_QOS_1</code><em class="property"> = 1</em><a class="headerlink" href="#definition.SubackReturnCode.SUCCESS_MAX_QOS_1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.SubackReturnCode.SUCCESS_MAX_QOS_2">
+<code class="sig-name descname">SUCCESS_MAX_QOS_2</code><em class="property"> = 2</em><a class="headerlink" href="#definition.SubackReturnCode.SUCCESS_MAX_QOS_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="definition.messageType">
+<em class="property">class </em><code class="sig-prename descclassname">definition.</code><code class="sig-name descname">messageType</code><a class="headerlink" href="#definition.messageType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>MQTT协议定义的报文类型。</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="definition.messageType.CONNACK">
+<code class="sig-name descname">CONNACK</code><em class="property"> = 2</em><a class="headerlink" href="#definition.messageType.CONNACK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.messageType.CONNECT">
+<code class="sig-name descname">CONNECT</code><em class="property"> = 1</em><a class="headerlink" href="#definition.messageType.CONNECT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.messageType.DISCONNECT">
+<code class="sig-name descname">DISCONNECT</code><em class="property"> = 14</em><a class="headerlink" href="#definition.messageType.DISCONNECT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.messageType.PINGREQ">
+<code class="sig-name descname">PINGREQ</code><em class="property"> = 12</em><a class="headerlink" href="#definition.messageType.PINGREQ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.messageType.PINGRESP">
+<code class="sig-name descname">PINGRESP</code><em class="property"> = 13</em><a class="headerlink" href="#definition.messageType.PINGRESP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.messageType.PUBACK">
+<code class="sig-name descname">PUBACK</code><em class="property"> = 4</em><a class="headerlink" href="#definition.messageType.PUBACK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.messageType.PUBCOMP">
+<code class="sig-name descname">PUBCOMP</code><em class="property"> = 7</em><a class="headerlink" href="#definition.messageType.PUBCOMP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.messageType.PUBLISH">
+<code class="sig-name descname">PUBLISH</code><em class="property"> = 3</em><a class="headerlink" href="#definition.messageType.PUBLISH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.messageType.PUBREC">
+<code class="sig-name descname">PUBREC</code><em class="property"> = 5</em><a class="headerlink" href="#definition.messageType.PUBREC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.messageType.PUBREL">
+<code class="sig-name descname">PUBREL</code><em class="property"> = 6</em><a class="headerlink" href="#definition.messageType.PUBREL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.messageType.SUBACK">
+<code class="sig-name descname">SUBACK</code><em class="property"> = 9</em><a class="headerlink" href="#definition.messageType.SUBACK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.messageType.SUBSCRIBE">
+<code class="sig-name descname">SUBSCRIBE</code><em class="property"> = 8</em><a class="headerlink" href="#definition.messageType.SUBSCRIBE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.messageType.UNSUBACK">
+<code class="sig-name descname">UNSUBACK</code><em class="property"> = 11</em><a class="headerlink" href="#definition.messageType.UNSUBACK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="definition.messageType.UNSUBSCRIBE">
+<code class="sig-name descname">UNSUBSCRIBE</code><em class="property"> = 10</em><a class="headerlink" href="#definition.messageType.UNSUBSCRIBE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, 宋义深.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

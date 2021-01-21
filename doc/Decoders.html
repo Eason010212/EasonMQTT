@@ -1,0 +1,661 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Decoders module &mdash; EasonMQTT 1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> EasonMQTT
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Decoders module</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EasonMQTT</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Decoders module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/Decoders.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-Decoders">
+<span id="decoders-module"></span><h1>Decoders module<a class="headerlink" href="#module-Decoders" title="Permalink to this headline">¶</a></h1>
+<p>&#64;file    :   Decoders.py
+&#64;time    :   2021/01/21 17:42:58
+&#64;author  :   宋义深 
+&#64;version :   1.0
+&#64;contact :   <a class="reference external" href="mailto:1371033826&#37;&#52;&#48;qq&#46;com">1371033826<span>&#64;</span>qq<span>&#46;</span>com</a> 
+&#64;license :   GPL-3.0 License
+&#64;link    :   <a class="reference external" href="https://github.com/Eason010212/EasonMQTT">https://github.com/Eason010212/EasonMQTT</a></p>
+<dl class="py function">
+<dt id="Decoders.CONNACK_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">CONNACK_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.CONNACK_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>CONNACK报文解码器。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>dict</dt><dd><p>CONNACK报文解析结果字典。包含字段: 
+sessionPresent - 当前会话标志；
+returnCode - CONNACK返回码，具体含义见definition.ConnackReturnCode。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>长度校验出错。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.CONNECT_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">CONNECT_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.CONNECT_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>CONNECT报文解码器。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>dict</dt><dd><p>CONNECT报文解析结果字典。包含字段: 
+cleanSession - 清理会话标志；
+willFlag - 遗嘱标志；
+willQos - 遗嘱服务质量等级；
+willRetain - 遗嘱保留标志；
+passwordFlag - 密码标志；
+userNameFlag - 用户名标志；
+keepAlive - 保活时长；
+clientId - ClientID；
+willTopic - 遗嘱主题；
+willMessage - 遗嘱消息；
+userName - 用户名；
+password - 密码。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>长度校验出错。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.DISCONNECT_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">DISCONNECT_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.DISCONNECT_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>DISCONNECT报文解码器。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>dict</dt><dd><p>空字典。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>长度校验出错。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="Decoders.IllegalMessageException">
+<em class="property">exception </em><code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">IllegalMessageException</code><a class="headerlink" href="#Decoders.IllegalMessageException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="simple">
+<dt>Description:</dt><dd><p>消息解码错误时抛出此异常。</p>
+</dd>
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.PINGREQ_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">PINGREQ_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.PINGREQ_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>PINGREQ报文解码器。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>dict</dt><dd><p>空字典。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>长度校验出错。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.PINGRESP_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">PINGRESP_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.PINGRESP_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>PINGRESP报文解码器。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>dict</dt><dd><p>空字典。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>长度校验出错。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.PUBACK_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">PUBACK_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.PUBACK_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>PUBACK报文解码器。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>dict</dt><dd><p>PUBACK报文解析结果字典。包含字段: 
+packetIdentifier - 报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>长度校验出错。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.PUBCOMP_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">PUBCOMP_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.PUBCOMP_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>PUBCOMP报文解码器。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>dict</dt><dd><p>PUBCOMP报文解析结果字典。包含字段: 
+packetIdentifier - 报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>长度校验出错。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.PUBLISH_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">PUBLISH_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.PUBLISH_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>PUBLISH报文解码器。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>dict</dt><dd><p>PUBLISH报文解析结果字典。包含字段: 
+dup - 重发标志；
+qos - 服务质量等级；
+retain - 保留标志；
+topic - 消息主题；
+packetIdentifier - 报文标识符；
+message - 消息内容。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>长度校验出错。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.PUBREC_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">PUBREC_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.PUBREC_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>PUBREC报文解码器。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>dict</dt><dd><p>PUBREC报文解析结果字典。包含字段: 
+packetIdentifier - 报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>长度校验出错。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.PUBREL_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">PUBREL_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.PUBREL_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>PUBREL报文解码器。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>dict</dt><dd><p>PUBREL报文解析结果字典。包含字段: 
+packetIdentifier - 报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>长度校验出错。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.SUBACK_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">SUBACK_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.SUBACK_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>SUBACK报文解码器。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>dict</dt><dd><p>SUBACK报文解析结果字典。包含字段: 
+packetIdentifier - 报文标识符；
+returnCodes - SUBACK返回码数组（具体含义见definition.SubackReturnCode）。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>长度校验出错。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.SUBSCRIBE_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">SUBSCRIBE_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.SUBSCRIBE_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>SUBSCRIBE报文解码器。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>dict</dt><dd><p>SUBSCRIBE报文解析结果字典。包含字段: 
+packetIdentifier - 报文标识符；
+topics - 订阅主题数组；</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>长度校验出错。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.UNSUBACK_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">UNSUBACK_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.UNSUBACK_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>UNSUBACK报文解码器。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>dict</dt><dd><p>UNSUBACK报文解析结果字典。包含字段: 
+packetIdentifier - 报文标识符。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>长度校验出错。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.UNSUBSCRIBE_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">UNSUBSCRIBE_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.UNSUBSCRIBE_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>UNSUBSCRIBE报文解码器。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>dict</dt><dd><p>UNSUBSCRIBE报文解析结果字典。包含字段: 
+packetIdentifier - 报文标识符；
+topics - 取消订阅主题数组。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>长度校验出错。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.message_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">message_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.message_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>报文解码器选择器。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的报文字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>报文头部出错。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.remainingBytes_Decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">remainingBytes_Decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em>, <em class="sig-param"><span class="n">preMode</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.remainingBytes_Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>解析报文的剩余长度，并提供可选的验证功能：当preMode为True（预解码模式）时，仅返回剩余字节与报文剩余长度，不进行验证；当preMode为False（常规模式）时，会额外进行长度校验。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解析的字节串。</p>
+</dd>
+<dt>preMode(boolean, DEFAULT=False)</dt><dd><p>True - 预解码模式； False - 常规模式。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>byte[]</dt><dd><p>除去“剩余长度”字节的剩余字节。</p>
+</dd>
+<dt>int</dt><dd><p>报文剩余长度。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>Decoders.IllegalMessageException</dt><dd><p>长度校验出错（仅常规模式）。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="Decoders.utf8_decoder">
+<code class="sig-prename descclassname">Decoders.</code><code class="sig-name descname">utf8_decoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Decoders.utf8_decoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Description:</dt><dd><p>带长度头部的utf-8字节串解码。此方法从给定的字节串中解码一个utf-8字符串，将解码结果与剩余部分一并返回。</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>bytes(byte[])</dt><dd><p>待解码的字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>string</dt><dd><p>解码出的utf-8字符串。</p>
+</dd>
+<dt>byte[]</dt><dd><p>解码后剩余的字节串。</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, 宋义深.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

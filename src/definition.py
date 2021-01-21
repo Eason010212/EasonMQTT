@@ -1,8 +1,7 @@
-#!/usr/bin/env python
 # -*-coding:utf-8 -*-
 '''
 @file    :   definition.py
-@time    :   2021/01/14 00:05:10
+@time    :   2021/01/21 23:50:14
 @author  :   宋义深 
 @version :   1.0
 @contact :   1371033826@qq.com 
@@ -10,11 +9,15 @@
 @link    :   https://github.com/Eason010212/EasonMQTT
 '''
 
+
 PROTOCOL_NAME = "MQTT"
 PROTOCOL_LEVEL = 4
 
 class messageType:
-
+    """
+        Description:
+            MQTT协议定义的报文类型。
+    """
     CONNECT = 1
     CONNACK = 2
     PUBLISH = 3
@@ -31,6 +34,10 @@ class messageType:
     DISCONNECT = 14
 
 class ConnackReturnCode:
+    """
+        Description:
+            MQTT协议定义的CONNACK返回码。
+    """
     ACCEPTED = 0
     REFUSED_UNSUPPORTED_PROTOCOL = 1
     REFUSED_ILLEGAL_CLIENTID = 2
@@ -39,6 +46,10 @@ class ConnackReturnCode:
     REFUSED_UNAUTHORIZED = 5
 
 class SubackReturnCode:
+    """
+        Description:
+            MQTT协议定义的SUBACK返回码。
+    """
     SUCCESS_MAX_QOS_0 = 0
     SUCCESS_MAX_QOS_1 = 1
     SUCCESS_MAX_QOS_2 = 2

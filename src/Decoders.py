@@ -1,8 +1,7 @@
-#!/usr/bin/env python
 # -*-coding:utf-8 -*-
 '''
 @file    :   Decoders.py
-@time    :   2021/01/14 00:05:03
+@time    :   2021/01/21 17:42:58
 @author  :   宋义深 
 @version :   1.0
 @contact :   1371033826@qq.com 
@@ -11,16 +10,53 @@
 '''
 
 import definition
-import Encoders
+
 class IllegalMessageException(Exception):
+    '''
+        Description:
+            消息解码错误时抛出此异常。
+        Args:
+            None
+    '''
     pass
 
 def utf8_decoder(bytes):
+    """
+        Description:
+            带长度头部的utf-8字节串解码。此方法从给定的字节串中解码一个utf-8字符串，将解码结果与剩余部分一并返回。
+        Args:
+            bytes(byte[])
+                待解码的字节串。
+        Returns:
+            string
+                解码出的utf-8字符串。
+            byte[]
+                解码后剩余的字节串。    
+        Raises:
+            None
+    """
     length = int.from_bytes(bytes[0:2],byteorder='big')
     str = bytes[2:2+length].decode('utf-8')
     return str, bytes[2+length:]
 
 def remainingBytes_Decoder(bytes, preMode=False):
+    """
+        Description:
+            解析报文的剩余长度，并提供可选的验证功能：当preMode为True（预解码模式）时，仅返回剩余字节与报文剩余长度，不进行验证；当preMode为False（常规模式）时，会额外进行长度校验。
+        Args:
+            bytes(byte[])
+                待解析的字节串。
+            preMode(boolean, DEFAULT=False)
+                True - 预解码模式； False - 常规模式。
+        Returns:
+            byte[]
+                除去“剩余长度”字节的剩余字节。
+            int
+                报文剩余长度。
+        Raises:
+            Decoders.IllegalMessageException
+                长度校验出错（仅常规模式）。
+    """
     remainedLength = 0
     multiplier = 1
     bytePos = -1
@@ -36,6 +72,31 @@ def remainingBytes_Decoder(bytes, preMode=False):
         return bytes[bytePos+1:],remainedLength
 
 def CONNECT_Decoder(bytes):
+    """
+        Description:
+            CONNECT报文解码器。
+        Args:
+            bytes(byte[])
+                待解码的报文字节串。
+        Returns:
+            dict
+                CONNECT报文解析结果字典。包含字段: 
+                cleanSession - 清理会话标志；
+                willFlag - 遗嘱标志；
+                willQos - 遗嘱服务质量等级；
+                willRetain - 遗嘱保留标志；
+                passwordFlag - 密码标志；
+                userNameFlag - 用户名标志；
+                keepAlive - 保活时长；
+                clientId - ClientID；
+                willTopic - 遗嘱主题；
+                willMessage - 遗嘱消息；
+                userName - 用户名；
+                password - 密码。
+        Raises:
+            Decoders.IllegalMessageException
+                长度校验出错。
+    """
     if int.from_bytes(bytes[0:1],byteorder='big')==16:
         remBytes = remainingBytes_Decoder(bytes[1:])[0]
         protocolName, remBytes = utf8_decoder(remBytes)
@@ -90,6 +151,21 @@ def CONNECT_Decoder(bytes):
         raise IllegalMessageException()
 
 def CONNACK_Decoder(bytes):
+    """
+        Description:
+            CONNACK报文解码器。
+        Args:
+            bytes(byte[])
+                待解码的报文字节串。
+        Returns:
+            dict
+                CONNACK报文解析结果字典。包含字段: 
+                sessionPresent - 当前会话标志；
+                returnCode - CONNACK返回码，具体含义见definition.ConnackReturnCode。
+        Raises:
+            Decoders.IllegalMessageException
+                长度校验出错。
+    """
     if int.from_bytes(bytes[0:1],byteorder='big')==32:
         remBytes = remainingBytes_Decoder(bytes[1:])[0]
         sessionPresent = int.from_bytes(remBytes[0:1],'big')
@@ -105,6 +181,25 @@ def CONNACK_Decoder(bytes):
     }
 
 def PUBLISH_Decoder(bytes):
+    """
+        Description:
+            PUBLISH报文解码器。
+        Args:
+            bytes(byte[])
+                待解码的报文字节串。
+        Returns:
+            dict
+                PUBLISH报文解析结果字典。包含字段: 
+                dup - 重发标志；
+                qos - 服务质量等级；
+                retain - 保留标志；
+                topic - 消息主题；
+                packetIdentifier - 报文标识符；
+                message - 消息内容。
+        Raises:
+            Decoders.IllegalMessageException
+                长度校验出错。
+    """
     attrs = int.from_bytes(bytes[0:1],'big')
     remBytes = bytes[1:]
     dup = (attrs&8)>>3
@@ -124,6 +219,20 @@ def PUBLISH_Decoder(bytes):
     }
 
 def PUBACK_Decoder(bytes):
+    """
+        Description:
+            PUBACK报文解码器。
+        Args:
+            bytes(byte[])
+                待解码的报文字节串。
+        Returns:
+            dict
+                PUBACK报文解析结果字典。包含字段: 
+                packetIdentifier - 报文标识符。
+        Raises:
+            Decoders.IllegalMessageException
+                长度校验出错。
+    """
     if int.from_bytes(bytes[0:1],byteorder='big')==64:
         remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes,'big')
@@ -134,6 +243,20 @@ def PUBACK_Decoder(bytes):
     }
 
 def PUBREC_Decoder(bytes):
+    """
+        Description:
+            PUBREC报文解码器。
+        Args:
+            bytes(byte[])
+                待解码的报文字节串。
+        Returns:
+            dict
+                PUBREC报文解析结果字典。包含字段: 
+                packetIdentifier - 报文标识符。
+        Raises:
+            Decoders.IllegalMessageException
+                长度校验出错。
+    """
     if int.from_bytes(bytes[0:1],byteorder='big')==80:
         remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes,'big')
@@ -144,6 +267,20 @@ def PUBREC_Decoder(bytes):
     }
 
 def PUBREL_Decoder(bytes):
+    """
+        Description:
+            PUBREL报文解码器。
+        Args:
+            bytes(byte[])
+                待解码的报文字节串。
+        Returns:
+            dict
+                PUBREL报文解析结果字典。包含字段: 
+                packetIdentifier - 报文标识符。
+        Raises:
+            Decoders.IllegalMessageException
+                长度校验出错。
+    """
     if int.from_bytes(bytes[0:1],byteorder='big')==98:
         remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes,'big')
@@ -154,6 +291,20 @@ def PUBREL_Decoder(bytes):
     }
 
 def PUBCOMP_Decoder(bytes):
+    """
+        Description:
+            PUBCOMP报文解码器。
+        Args:
+            bytes(byte[])
+                待解码的报文字节串。
+        Returns:
+            dict
+                PUBCOMP报文解析结果字典。包含字段: 
+                packetIdentifier - 报文标识符。
+        Raises:
+            Decoders.IllegalMessageException
+                长度校验出错。
+    """
     if int.from_bytes(bytes[0:1],byteorder='big')==112:
         remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes,'big')
@@ -164,6 +315,21 @@ def PUBCOMP_Decoder(bytes):
     }
 
 def SUBSCRIBE_Decoder(bytes):
+    """
+        Description:
+            SUBSCRIBE报文解码器。
+        Args:
+            bytes(byte[])
+                待解码的报文字节串。
+        Returns:
+            dict
+                SUBSCRIBE报文解析结果字典。包含字段: 
+                packetIdentifier - 报文标识符；
+                topics - 订阅主题数组；
+        Raises:
+            Decoders.IllegalMessageException
+                长度校验出错。
+    """
     if int.from_bytes(bytes[0:1],byteorder='big')==130:
         remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes[0:2],'big')
@@ -186,6 +352,21 @@ def SUBSCRIBE_Decoder(bytes):
     }
 
 def SUBACK_Decoder(bytes):
+    """
+        Description:
+            SUBACK报文解码器。
+        Args:
+            bytes(byte[])
+                待解码的报文字节串。
+        Returns:
+            dict
+                SUBACK报文解析结果字典。包含字段: 
+                packetIdentifier - 报文标识符；
+                returnCodes - SUBACK返回码数组（具体含义见definition.SubackReturnCode）。
+        Raises:
+            Decoders.IllegalMessageException
+                长度校验出错。
+    """
     if int.from_bytes(bytes[0:1],byteorder='big')==144:
         remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes[0:2],'big')
@@ -202,6 +383,21 @@ def SUBACK_Decoder(bytes):
     }
 
 def UNSUBSCRIBE_Decoder(bytes):
+    """
+        Description:
+            UNSUBSCRIBE报文解码器。
+        Args:
+            bytes(byte[])
+                待解码的报文字节串。
+        Returns:
+            dict
+                UNSUBSCRIBE报文解析结果字典。包含字段: 
+                packetIdentifier - 报文标识符；
+                topics - 取消订阅主题数组。
+        Raises:
+            Decoders.IllegalMessageException
+                长度校验出错。
+    """
     if int.from_bytes(bytes[0:1],byteorder='big')==162:
         remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes[0:2],'big')
@@ -218,6 +414,20 @@ def UNSUBSCRIBE_Decoder(bytes):
     }
 
 def UNSUBACK_Decoder(bytes):
+    """
+        Description:
+            UNSUBACK报文解码器。
+        Args:
+            bytes(byte[])
+                待解码的报文字节串。
+        Returns:
+            dict
+                UNSUBACK报文解析结果字典。包含字段: 
+                packetIdentifier - 报文标识符。
+        Raises:
+            Decoders.IllegalMessageException
+                长度校验出错。
+    """
     if int.from_bytes(bytes[0:1],byteorder='big')==176:
         remBytes = remainingBytes_Decoder(bytes[1:])[0]
         packetIdentifier = int.from_bytes(remBytes[0:2],'big')
@@ -228,6 +438,19 @@ def UNSUBACK_Decoder(bytes):
     }
 
 def PINGREQ_Decoder(bytes):
+    """
+        Description:
+            PINGREQ报文解码器。
+        Args:
+            bytes(byte[])
+                待解码的报文字节串。
+        Returns:
+            dict
+                空字典。
+        Raises:
+            Decoders.IllegalMessageException
+                长度校验出错。
+    """
     if int.from_bytes(bytes[0:1],byteorder='big')==192:
         remBytes = remainingBytes_Decoder(bytes[1:])[0]
     else:
@@ -235,6 +458,19 @@ def PINGREQ_Decoder(bytes):
     return {}
 
 def PINGRESP_Decoder(bytes):
+    """
+        Description:
+            PINGRESP报文解码器。
+        Args:
+            bytes(byte[])
+                待解码的报文字节串。
+        Returns:
+            dict
+                空字典。
+        Raises:
+            Decoders.IllegalMessageException
+                长度校验出错。
+    """
     if int.from_bytes(bytes[0:1],byteorder='big')==208:
         remBytes = remainingBytes_Decoder(bytes[1:])[0]
     else:
@@ -242,6 +478,19 @@ def PINGRESP_Decoder(bytes):
     return {}
 
 def DISCONNECT_Decoder(bytes):
+    """
+        Description:
+            DISCONNECT报文解码器。
+        Args:
+            bytes(byte[])
+                待解码的报文字节串。
+        Returns:
+            dict
+                空字典。
+        Raises:
+            Decoders.IllegalMessageException
+                长度校验出错。
+    """
     if int.from_bytes(bytes[0:1],byteorder='big')==224:
         remBytes = remainingBytes_Decoder(bytes[1:])[0]
     else:
@@ -249,6 +498,18 @@ def DISCONNECT_Decoder(bytes):
     return {}
 
 def message_Decoder(bytes):
+    """
+        Description:
+            报文解码器选择器。
+        Args:
+            bytes(byte[])
+                待解码的报文字节串。
+        Returns:
+            None
+        Raises:
+            Decoders.IllegalMessageException
+                报文头部出错。
+    """
     messageType = ((int.from_bytes(bytes[0:1],byteorder='big'))&240)>>4
     if messageType == definition.messageType.CONNECT:
         return messageType, CONNECT_Decoder(bytes)
@@ -280,19 +541,3 @@ def message_Decoder(bytes):
         return messageType, DISCONNECT_Decoder(bytes)
     else:
         raise IllegalMessageException()
-
-def logicTest():
-    print(CONNECT_Decoder(Encoders.CONNECT_Encoder(1,0,1,2,1,0,256,'eason0212','is','ijsfs','eason')))
-    print(CONNACK_Decoder(Encoders.CONNACK_Encoder(1,definition.ConnackReturnCode.REFUSED_ILLEGAL_CLIENTID)))
-    print(PUBLISH_Decoder(Encoders.PUBLISH_Encoder(1,2,1,'hhh',10,'hhhhh')))
-    print(PUBACK_Decoder(Encoders.PUBACK_Encoder(10)))
-    print(PUBREC_Decoder(Encoders.PUBREC_Encoder(10)))
-    print(PUBREL_Decoder(Encoders.PUBREL_Encoder(10)))
-    print(PUBCOMP_Decoder(Encoders.PUBCOMP_Encoder(10)))
-    print(SUBSCRIBE_Decoder(Encoders.SUBSCRIBE_Encoder(11,[{'topic':'2333','qos':1},{'topic':'2433','qos':2}])))
-    print(SUBACK_Decoder(Encoders.SUBACK_Encoder(11,[0,128])))
-    print(UNSUBSCRIBE_Decoder(Encoders.UNSUBSCRIBE_Encoder(12,['2333','2433','2533'])))
-    print(UNSUBACK_Decoder(Encoders.UNSUBACK_Encoder(12)))
-    print(PINGREQ_Decoder(Encoders.PINGREQ_Encoder()))
-    print(PINGRESP_Decoder(Encoders.PINGRESP_Encoder()))
-    print(DISCONNECT_Decoder(Encoders.DISCONNECT_Encoder()))
