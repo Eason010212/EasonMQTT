@@ -80,20 +80,20 @@ def receive(socket):
         try:
             oneMessage = b''
             data = socket.recv(2)
-            oneMessage += data
-            remainedLengthBytes = b''
-            remainedLengthBytes += int.to_bytes(data[1],1,'big')
-            while data !=b'' and (data[data.__len__()-1] & 128 )!=0:
-                data = socket.recv(1)
+            if data != b'':
                 oneMessage += data
-                remainedLengthBytes += data
-            data = socket.recv(Decoders.remainingBytes_Decoder(remainedLengthBytes,True)[1])
-            oneMessage += data
+                remainedLengthBytes = b''
+                remainedLengthBytes += int.to_bytes(data[1],1,'big')
+                while data !=b'' and (data[data.__len__()-1] & 128 )!=0:
+                    data = socket.recv(1)
+                    oneMessage += data
+                    remainedLengthBytes += data
+                data = socket.recv(Decoders.remainingBytes_Decoder(remainedLengthBytes,True)[1])
+                oneMessage += data
             if oneMessage != b'':
                 decode(oneMessage,socket)
         except Exception as e:
-            print(e)
-            print("["+getTime()+"]"+" [SYSTEM/INFO] Socket Disconnected: Connection closed by server.")
+            print("["+getTime()+"]"+" [CLIENT/INFO] Socket Disconnected: Connection closed by server.")
             alive = SOCKET_DISCONNECTED
             break
 
@@ -142,19 +142,19 @@ def startClient(serverHost, serverPort, userNameFlag, passwordFlag, willRetain, 
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setblocking(True)
-        print("["+getTime()+"]"+" [SYSTEM/INFO] Socket Connecting...")
+        print("["+getTime()+"]"+" [CLIENT/INFO] Socket Connecting...")
         sock.connect((serverHost, serverPort))
     except:
-        print("["+getTime()+"]"+" [SYSTEM/INFO] Socket Disconnected: Can not connect to server.")
+        print("["+getTime()+"]"+" [CLIENT/INFO] Socket Disconnected: Can not connect to server.")
         alive = SOCKET_DISCONNECTED
         input("Press ENTER to continue...")
         sys.exit(0)
     alive = SOCKET_CONNECTED
-    print("["+getTime()+"]"+" [SYSTEM/INFO] Socket Connected.")
+    print("["+getTime()+"]"+" [CLIENT/INFO] Socket Connected.")
     receiveThread = threading.Thread(target = receive, args = (sock,))
     receiveThread.start()
     sendMessage(sock, Encoders.CONNECT_Encoder(userNameFlag, passwordFlag, willRetain, willQos, willFlag, cleanSession, keepAlive, clientId, willTopic, willMessage, userName, password))
-    print("["+getTime()+"]"+" [SYSTEM/INFO] MQTT Connecting...")
+    print("["+getTime()+"]"+" [CLIENT/INFO] MQTT Connecting...")
     return sock
 
 def sendMessage(sock, message):
@@ -212,7 +212,7 @@ def subscribe(sock, topics):
     packetIdentifier = generatePacketIdentifier()
     tmpSubscribes.append({'packetIdentifier':packetIdentifier,'topics':topics})
     sendMessage(sock, Encoders.SUBSCRIBE_Encoder(packetIdentifier,topics))
-    print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": Subscribing...")
+    print("["+getTime()+"]"+" [CLIENT/INFO] Packet "+str(packetIdentifier)+": Subscribing...")
     return packetIdentifier
 
 def unsubscribe(sock, topics):
@@ -234,7 +234,7 @@ def unsubscribe(sock, topics):
     packetIdentifier = generatePacketIdentifier()
     tmpUnsubscribes.append({'packetIdentifier':packetIdentifier,'topics':topics})
     sendMessage(sock, Encoders.UNSUBSCRIBE_Encoder(packetIdentifier,topics))
-    print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": Unsubscribing...")
+    print("["+getTime()+"]"+" [CLIENT/INFO] Packet "+str(packetIdentifier)+": Unsubscribing...")
     return packetIdentifier
 
 def disconnect(sock):
@@ -250,7 +250,7 @@ def disconnect(sock):
             IOException
                 socket连接异常。
     """
-    print("["+getTime()+"]"+" [SYSTEM/INFO] Sending DISCONNECT message...")
+    print("["+getTime()+"]"+" [CLIENT/INFO] Sending DISCONNECT message...")
     sendMessage(sock, Encoders.DISCONNECT_Encoder())
 
 def ping(sock):
@@ -266,9 +266,9 @@ def ping(sock):
             IOException
                 socket连接异常。
     """
-    print("["+getTime()+"]"+" [SYSTEM/INFO] Sending heartbeat...")
+    print("["+getTime()+"]"+" [CLIENT/INFO] Sending heartbeat...")
     sendMessage(sock, Encoders.PINGREQ_Encoder())
-    print("["+getTime()+"]"+" [SYSTEM/INFO] Heartbeat sent.")
+    print("["+getTime()+"]"+" [CLIENT/INFO] Heartbeat sent.")
 
 def publishAtQos0(sock, topic, message, retain):
     """
@@ -290,7 +290,7 @@ def publishAtQos0(sock, topic, message, retain):
                 socket连接异常。
     """
     sendMessage(sock, Encoders.PUBLISH_Encoder(0, 0, retain, topic, 0, message))
-    print("["+getTime()+"]"+" [SYSTEM/INFO] Message published at Qos0" + ".")
+    print("["+getTime()+"]"+" [CLIENT/INFO] Message published at Qos0" + ".")
 
 def publishAtQos1(sock, topic, message, retain):
     """
@@ -372,25 +372,25 @@ def decode(data,sock):
             if results['sessionPresent'] == 0:
                 subscribes = []
             if results['returnCode'] == definition.ConnackReturnCode.ACCEPTED:
-                print("["+getTime()+"]"+" [SYSTEM/INFO] MQTT Connected!")
+                print("["+getTime()+"]"+" [CLIENT/INFO] MQTT Connected!")
             elif results['returnCode'] == definition.ConnackReturnCode.REFUSED_ILLEGAL_CLIENTID:
-                print("["+getTime()+"]"+" [SYSTEM/INFO] MQTT Disconnected: Illegal ClientID.")
+                print("["+getTime()+"]"+" [CLIENT/INFO] MQTT Disconnected: Illegal ClientID.")
                 alive = SOCKET_DISCONNECTED
                 sock.close()
             elif results['returnCode'] == definition.ConnackReturnCode.REFUSED_INVALID_USER:
-                print("["+getTime()+"]"+" [SYSTEM/INFO] MQTT Disconnected: Invalid User.")
+                print("["+getTime()+"]"+" [CLIENT/INFO] MQTT Disconnected: Invalid User.")
                 alive = SOCKET_DISCONNECTED
                 sock.close()
             elif results['returnCode'] == definition.ConnackReturnCode.REFUSED_SERVER_UNAVAILABLE:
-                print("["+getTime()+"]"+" [SYSTEM/INFO] MQTT Disconnected: Server temporarily unavailable.")
+                print("["+getTime()+"]"+" [CLIENT/INFO] MQTT Disconnected: Server temporarily unavailable.")
                 alive = SOCKET_DISCONNECTED
                 sock.close()
             elif results['returnCode'] == definition.ConnackReturnCode.REFUSED_UNAUTHORIZED:
-                print("["+getTime()+"]"+" [SYSTEM/INFO] MQTT Disconnected: Unauthorized.")
+                print("["+getTime()+"]"+" [CLIENT/INFO] MQTT Disconnected: Unauthorized.")
                 alive = SOCKET_DISCONNECTED
                 sock.close()
             elif results['returnCode'] == definition.ConnackReturnCode.REFUSED_UNSUPPORTED_PROTOCOL:
-                print("["+getTime()+"]"+" [SYSTEM/INFO] MQTT Disconnected: Unsupported protocol.")
+                print("["+getTime()+"]"+" [CLIENT/INFO] MQTT Disconnected: Unsupported protocol.")
                 alive = SOCKET_DISCONNECTED
                 sock.close()
         elif messageType == definition.messageType.SUBACK:
@@ -399,22 +399,22 @@ def decode(data,sock):
                 if tmpSubscribes[i]['packetIdentifier'] == packetIdentifier:
                     for j in range(0,tmpSubscribes[i]['topics'].__len__()):
                         if results['returnCodes'][j] == definition.SubackReturnCode.FAILURE:
-                            print("["+getTime()+"]"+" [SYSTEM/WARN] Subscribe failure at topic "+tmpSubscribes[i]['topics'][j]['topic']+".")
+                            print("["+getTime()+"]"+" [CLIENT/WARN] Subscribe failure at topic "+tmpSubscribes[i]['topics'][j]['topic']+".")
                         elif results['returnCodes'][j] == definition.SubackReturnCode.SUCCESS_MAX_QOS_0:
-                            print("["+getTime()+"]"+" [SYSTEM/INFO] Subscribe success at topic "+tmpSubscribes[i]['topics'][j]['topic']+", Qos 0 .")
+                            print("["+getTime()+"]"+" [CLIENT/INFO] Subscribe success at topic "+tmpSubscribes[i]['topics'][j]['topic']+", Qos 0 .")
                             removeSubscribe(tmpSubscribes[i]['topics'][j]['topic'])
                             subscribes.append({'topic':tmpSubscribes[i]['topics'][j]['topic'],'qos':0})
                         elif results['returnCodes'][j] == definition.SubackReturnCode.SUCCESS_MAX_QOS_1:
-                            print("["+getTime()+"]"+" [SYSTEM/INFO] Subscribe success at topic "+tmpSubscribes[i]['topics'][j]['topic']+", Qos 1 .")
+                            print("["+getTime()+"]"+" [CLIENT/INFO] Subscribe success at topic "+tmpSubscribes[i]['topics'][j]['topic']+", Qos 1 .")
                             removeSubscribe(tmpSubscribes[i]['topics'][j]['topic'])
                             subscribes.append({'topic':tmpSubscribes[i]['topics'][j]['topic'],'qos':1})
                         elif results['returnCodes'][j] == definition.SubackReturnCode.SUCCESS_MAX_QOS_2:
-                            print("["+getTime()+"]"+" [SYSTEM/INFO] Subscribe success at topic "+tmpSubscribes[i]['topics'][j]['topic']+", Qos 2 .")
+                            print("["+getTime()+"]"+" [CLIENT/INFO] Subscribe success at topic "+tmpSubscribes[i]['topics'][j]['topic']+", Qos 2 .")
                             removeSubscribe(tmpSubscribes[i]['topics'][j]['topic'])
                             subscribes.append({'topic':tmpSubscribes[i]['topics'][j]['topic'],'qos':2})
                     tmpSubscribes.pop(i)
                     break
-            print("["+getTime()+"]"+" [SYSTEM/INFO] Current subscribes: "+str(subscribes)+" .")
+            print("["+getTime()+"]"+" [CLIENT/INFO] Current subscribes: "+str(subscribes)+" .")
         elif messageType == definition.messageType.UNSUBACK:
             packetIdentifier = results['packetIdentifier']
             for i in range(0,tmpUnsubscribes.__len__()):
@@ -422,28 +422,28 @@ def decode(data,sock):
                     for j in range(0,tmpUnsubscribes[i]['topics'].__len__()):
                         removeSubscribe(tmpUnsubscribes[i]['topics'][j])
                     tmpUnsubscribes.pop(i)
-                    print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": Unsubscribe success.")
+                    print("["+getTime()+"]"+" [CLIENT/INFO] Packet "+str(packetIdentifier)+": Unsubscribe success.")
                     break
-            print("["+getTime()+"]"+" [SYSTEM/INFO] Current subscribes: "+str(subscribes)+" .")
+            print("["+getTime()+"]"+" [CLIENT/INFO] Current subscribes: "+str(subscribes)+" .")
         elif messageType == definition.messageType.PUBACK:
             packetIdentifier = results['packetIdentifier']
-            print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBACK received.")
+            print("["+getTime()+"]"+" [CLIENT/INFO] Packet "+str(packetIdentifier)+": PUBACK received.")
             for i in range (0,tmpPublishAtQos1.__len__()):
                 if tmpPublishAtQos1[i]['packetIdentifier'] == packetIdentifier and tmpPublishAtQos1[i]['waitingFor'] == 'PUBACK':
                     tmpPublishAtQos1.pop(i)
                     break
         elif messageType == definition.messageType.PUBREC:
             packetIdentifier = results['packetIdentifier']
-            print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBREC received.")
+            print("["+getTime()+"]"+" [CLIENT/INFO] Packet "+str(packetIdentifier)+": PUBREC received.")
             sendMessage(sock,Encoders.PUBREL_Encoder(packetIdentifier))
-            print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBREL sent.")
+            print("["+getTime()+"]"+" [CLIENT/INFO] Packet "+str(packetIdentifier)+": PUBREL sent.")
             for i in range (0,tmpPublishAtQos2.__len__()):
                 if tmpPublishAtQos2[i]['packetIdentifier'] == packetIdentifier and tmpPublishAtQos2[i]['waitingFor'] == 'PUBREC':
                     tmpPublishAtQos2[i]['waitingFor'] = 'PUBCOMP'
                     break
         elif messageType == definition.messageType.PUBCOMP:
             packetIdentifier = results['packetIdentifier']
-            print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBCOMP received.")
+            print("["+getTime()+"]"+" [CLIENT/INFO] Packet "+str(packetIdentifier)+": PUBCOMP received.")
             for i in range (0,tmpPublishAtQos2.__len__()):
                 if tmpPublishAtQos2[i]['packetIdentifier'] == packetIdentifier and tmpPublishAtQos2[i]['waitingFor'] == 'PUBCOMP':
                     tmpPublishAtQos2.pop(i)
@@ -454,31 +454,31 @@ def decode(data,sock):
             message = results['message']
             packetIdentifier = results['packetIdentifier']
             if qos == 0:
-                print("["+getTime()+"]"+" [SYSTEM/INFO] A message received: topic - "+topic+" , message - "+message+" .")
+                print("["+getTime()+"]"+" [CLIENT/INFO] A message received: topic - "+topic+" , message - "+message+" .")
                 messageReceived.append({
                     'topic': topic,
                     'message': message
                 })
             elif qos == 1:
-                print("["+getTime()+"]"+" [SYSTEM/INFO] A message received: topic - "+topic+" , message - "+message+" .")
+                print("["+getTime()+"]"+" [CLIENT/INFO] A message received: topic - "+topic+" , message - "+message+" .")
                 messageReceived.append({
                     'topic': topic,
                     'message': message
                 })
                 sendMessage(sock, Encoders.PUBACK_Encoder(packetIdentifier))
-                print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBACK sent.")
+                print("["+getTime()+"]"+" [CLIENT/INFO] Packet "+str(packetIdentifier)+": PUBACK sent.")
             elif qos == 2:
-                print("["+getTime()+"]"+" [SYSTEM/INFO] A message received but not confirmed: topic - "+topic+" , message - "+message+" .")
+                print("["+getTime()+"]"+" [CLIENT/INFO] A message received but not confirmed: topic - "+topic+" , message - "+message+" .")
                 tmpReceiveAtQos2.append({
                     'packetIdentifier': packetIdentifier,
                     'topic': topic,
                     'message': message
                 })
                 sendMessage(sock, Encoders.PUBREC_Encoder(packetIdentifier))
-                print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBREC sent.")
+                print("["+getTime()+"]"+" [CLIENT/INFO] Packet "+str(packetIdentifier)+": PUBREC sent.")
         elif messageType == definition.messageType.PUBREL:
             packetIdentifier = results['packetIdentifier']
-            print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBREL received.")
+            print("["+getTime()+"]"+" [CLIENT/INFO] Packet "+str(packetIdentifier)+": PUBREL received.")
             for i in range(0,tmpReceiveAtQos2.__len__()):
                 if tmpReceiveAtQos2[i]['packetIdentifier'] == packetIdentifier:
                     res = tmpReceiveAtQos2.pop(i)
@@ -486,15 +486,15 @@ def decode(data,sock):
                         'topic': res['topic'],
                         'message': res['message']
                     })
-                    print("["+getTime()+"]"+" [SYSTEM/INFO] A message received and confirmed: topic - "+res['topic']+" , message - "+res['message']+" .")
+                    print("["+getTime()+"]"+" [CLIENT/INFO] A message received and confirmed: topic - "+res['topic']+" , message - "+res['message']+" .")
                     sendMessage(sock, Encoders.PUBCOMP_Encoder(packetIdentifier))
-                    print("["+getTime()+"]"+" [SYSTEM/INFO] Packet "+str(packetIdentifier)+": PUBCOMP sent.")
+                    print("["+getTime()+"]"+" [CLIENT/INFO] Packet "+str(packetIdentifier)+": PUBCOMP sent.")
                     break
         elif messageType == definition.messageType.PINGRESP:
-            print("["+getTime()+"]"+" [SYSTEM/INFO] Heartbeat response received.")
+            print("["+getTime()+"]"+" [CLIENT/INFO] Heartbeat response received.")
     except Decoders.IllegalMessageException as e:
         print(data)
-        print("["+getTime()+"]"+" [SYSTEM/INFO] MQTT Disconnected: Illegal message received.")
+        print("["+getTime()+"]"+" [CLIENT/INFO] MQTT Disconnected: Illegal message received.")
         sock.close()
 
 def checkPackageStatus(packetIdenifier):
